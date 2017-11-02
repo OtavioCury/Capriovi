@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" global="false" />
+			<p:menuitem value="Todos os usuários"
+				url="/pages/entidades/usuario/list.xhtml" global="false" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<br />
+
+		<div align="center">
+			<div class="panel panel-default" style="width: 95%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title" style="font-weight: bold;">Todos os
+						usuários do sistema</h3>
+				</div>
+				<div class="panel-body">
+
+
+					<h:form id="userForm">
+
+						<p:growl id="msg" life="3000" />
+
+						<p:dataTable id="userDataTable" widgetVar="dataTable"
+							var="usuario" value="#{usuarioMB.usuarios}" paginator="true"
+							rows="10" sortMode="multiple" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.user_load}" resizableColumns="true"
+							selectionMode="single" rowKey="#{usuario.id}" reflow="true"
+							draggableColumns="true"
+							emptyMessage="Nenhum registro foi encontrado">
+							<f:facet name="header">
+								<h6>
+									#{labels.usuario_cadastrada}
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" global="false" />
+									<p:columnToggler datasource="userDataTable" trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{usuario.nome}" filterBy="#{usuario.nome}">
+								<f:facet name="header">
+									<h:outputText value="#{labels.user_name}" />
+								</f:facet>
+								<h:outputText value="#{usuario.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{usuario.email}" filterBy="#{usuario.email}">
+								<f:facet name="header">
+									<h:outputText value="E-Mail" />
+								</f:facet>
+								<h:outputText value="#{usuario.email}" />
+							</p:column>
+
+							<p:column sortBy="#{usuario.telefone}"
+								filterBy="#{usuario.telefone}">
+								<f:facet name="header">
+									<h:outputText value="#{labels.user_telefone}" />
+								</f:facet>
+								<h:outputText value="#{usuario.telefone}" />
+							</p:column>
+
+							<p:column exportable="false">
+								<f:facet name="header">
+									<h:outputText value="Opções" />
+								</f:facet>
+								<div align="center">
+									<p:commandButton update="userDataTable" value="Informações"
+										action="/pages/entidades/usuario/usuario.xhtml?faces-redirect=true"
+										actionListener="#{usuarioAddEditMB.update(usuario)}"
+										icon="fa fa-search" rendered="#{usuario.statusAdmin == true}"
+										global="false" />
+									<p:commandButton update="userDataTable"
+										action="/pages/entidades/usuario/usuario.xhtml?faces-redirect=true"
+										actionListener="#{usuarioAddEditMB.update(usuario)}"
+										icon="fa fa-search" rendered="#{usuario.statusAdmin == false}"
+										global="false" />
+									<p:commandButton value="Habilitar usuário"
+										update="userDataTable"
+										actionListener="#{usuarioAddEditMB.habilitaUsuario(usuario)}"
+										icon="fa fa-plus" rendered="#{usuario.statusAdmin == false}"
+										style="background: #ff3333; border-color: #ff3333;margin-left:3%">
+										<p:confirm header="Habilitar usuário"
+											message="Deseja habilitar o acesso a esse usuário!"
+											icon="ui-icon-alert" />
+									</p:commandButton>
+
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade" closeOnEscape="true">
+										<div align="center">
+											<p:commandButton value="Sim" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+												style="background: #ff3333; border-color: #ff3333" />
+											<p:commandButton value="Não" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</div>
+									</p:confirmDialog>
+								</div>
+							</p:column>
+						</p:dataTable>
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink>
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="userDataTable"
+									fileName="Todos os usuários" pageOnly="false" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="userDataTable"
+									fileName="Todos os usuários" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink>
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="userDataTable"
+									fileName="Todos os usuários" pageOnly="false" />
+							</h:commandLink>
+						</div>
+
+						<p:ajaxStatus onstart="PF('statusDialog').show()"
+							oncomplete="PF('statusDialog').hide()" />
+
+						<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+							appendTo="@(body)" style="align:center; text-align:center"
+							closable="false" position="center" minimizable="false"
+							maximizable="false" resizable="false" showHeader="true"
+							header="Carregando">
+							<p:graphicImage name="carregand.gif" library="gifs" />
+						</p:dialog>
+
+					</h:form>
+				</div>
+				<div class="panel-footer" align="left">Usuários Cadastrados</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.css" />
+	<link href="resources/site/css/site.min.css" rel="stylesheet"
+		type="text/css" />
+
+	<link href="resources/site/css/font-awesome.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		rel="stylesheet" type="text/css" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		rel="stylesheet" type="text/css" />
+	<title>Cadastro - Capriovi</title>
+</h:head>
+<body id="page-top" class="index">
+	<f:view>
+		<f:event listener="#{administradorAddEditMB.add()}"
+			type="preRenderView"></f:event>
+	</f:view>
+	<nav id="mainNav"
+		class="navbar navbar-default navbar-fixed-top navbar-custom">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="inicial.xhtml">Capriovi</a>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="login-panel panel panel-default">
+						<div class="panel-heading"
+							style="background: #e6e6e6; color: #000000; border-color: #e6e6e6"
+							align="center">
+							<h3 class="panel-title">Cadastro</h3>
+						</div>
+						<div class="panel-body">
+							<p:messages id="msgs" />
+							<h:form>
+								<br />
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									layout="grid"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+									<p:outputLabel value="Nome: " for="nome" />
+									<p:inputText id="nome" label="Nome" placeholder="Nome"
+										required="true"
+										value="#{administradorAddEditMB.administrador.nome}" />
+
+									<p:outputLabel value="Endereço: " for="endereço" />
+									<p:inputText id="endereço" label="Endereço"
+										placeholder="Endereço" required="true"
+										value="#{administradorAddEditMB.administrador.endereco}" />
+
+									<p:outputLabel value="Estado: " for="estado" />
+									<p:selectOneMenu id="estado"
+										value="#{administradorAddEditMB.administrador.estado}">
+										<f:selectItem itemLabel="Selecionar Estado" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{administradorAddEditMB.estados}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Município: " for="municipio" />
+									<p:inputText id="municipio" label="Municipio"
+										placeholder="Municipio" required="true"
+										value="#{administradorAddEditMB.administrador.municipio}" />
+
+									<p:outputLabel value="Cpf: " for="cpf" />
+									<p:inputMask id="cpf"
+										value="#{administradorAddEditMB.administrador.cpf}"
+										mask="999.999.999.99" placeholder="cpf" required="true" />
+
+									<p:outputLabel value="Telefone (fixo): " for="telefone" />
+									<p:inputMask id="telefone"
+										value="#{administradorAddEditMB.administrador.telefone}"
+										mask="(99) 9999-9999" placeholder="telefone" />
+
+									<p:outputLabel value="Celular: " for="celular" />
+									<p:inputMask id="celular"
+										value="#{administradorAddEditMB.administrador.celular}"
+										mask="(99) 9 9999-9999" placeholder="celular" required="true" />
+
+									<p:outputLabel value="Email: " for="email" />
+									<p:inputText id="email" label="Email"
+										validatorMessage="Este E-mail não é válido"
+										placeholder="email" required="true"
+										value="#{administradorAddEditMB.administrador.email}">
+										<f:validateRegex
+											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+									</p:inputText>
+
+								</p:panelGrid>
+								<br />
+
+
+								<br />
+								<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+
+
+									<p:outputLabel value="Login: " for="username" />
+									<p:inputText id="username" label="Username"
+										placeholder="Username" required="true"
+										value="#{administradorAddEditMB.administrador.username}" />
+									<p:message for="username" />
+
+									<p:outputLabel value="Senha: " for="password" />
+									<p:password id="password" match="confirmPassword"
+										label="Password 1" required="true" placeholder="Password"
+										feedback="true"
+										value="#{administradorAddEditMB.administrador.password}">
+										<f:validateLength minimum="6" />
+									</p:password>
+									<p:message for="password" />
+
+
+									<p:outputLabel value="Confirmar senha: " for="confirmPassword" />
+									<p:password id="confirmPassword" label="Password 2"
+										required="true" placeholder="Confirm password"
+										value="#{administradorAddEditMB.administrador.password}">
+										<f:validateLength minimum="6" />
+									</p:password>
+									<p:message for="confirmPassword" />
+
+								</p:panelGrid>
+								<br />
+
+								<p:outputPanel style="text-align:center">
+									<p:commandButton value="Voltar à página de login"
+										action="login.xhtml?faces-redirect=true"
+										icon="fa fa-mail-reply" ajax="false" immediate="true"
+										style="background: #ff3333; border-color: #ff3333" />
+
+									<p:commandButton value="Cadastrar" ajax="false"
+										validateClient="true"
+										style="text-align:center; margin-left:3%" icon="fa fa-check"
+										action="#{administradorAddEditMB.save()}" />
+
+								</p:outputPanel>
+								<br />
+
+							</h:form>
+
+
+							<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+								appendTo="@(body)" id="adminDialog"
+								style="align:center; text-align:center" closable="false"
+								position="center" minimizable="false" maximizable="false"
+								resizable="false" showHeader="true" header="Área restrita"
+								visible="#{administradorMB.bloqueado}">
+								<h:form id="formDialog">
+									<p:panelGrid columns="3" styleClass="ui-panelgrid-blank"
+										id="panelDialog">
+
+										<p:outputLabel value="Login: " for="usernameAdmin" />
+										<p:inputText id="usernameAdmin" placeholder="Usuário admin"
+											required="true" value="#{administradorMB.userAdmin}" />
+										<p:message for="usernameAdmin" />
+
+										<p:outputLabel value="Senha: " for="passwordAdmin" />
+										<p:password id="passwordAdmin" label="Password 1"
+											required="true" placeholder="Senha admin"
+											value="#{administradorMB.senhaAdmin}">
+											<f:validateLength minimum="6" />
+										</p:password>
+										<p:message for="passwordAdmin" />
+									</p:panelGrid>
+									<br />
+
+									<p:outputPanel style="text-align:center">
+										<p:commandButton value="Entrar" style="text-align:center"
+											styleClass="btn btn-success" icon="fa fa-check"
+											actionListener="#{administradorMB.testaAdmin()}"
+											update="adminDialog"
+											process="@(formDialog:panelDialog :input)" />
+									</p:outputPanel>
+								</h:form>
+							</p:dialog>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+</body>
+</html>

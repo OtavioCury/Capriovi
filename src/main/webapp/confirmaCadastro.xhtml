@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.min.css" />
+
+	<link href="resources/site/css/site.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="resources/site/css/font-awesome.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		rel="stylesheet" type="text/css" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		rel="stylesheet" type="text/css" />
+	<title>Confirmação - Capriovi</title>
+</h:head>
+<body id="page-top" class="index">
+	<f:view>
+		<f:event listener="#{usuarioAddEditMB.testaToken(param.token)}"
+			type="preRenderView"></f:event>
+	</f:view>
+	<nav id="mainNav"
+		class="navbar navbar-default navbar-fixed-top navbar-custom">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="inicial.xhtml">Capriovi</a>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="login-panel panel panel-default">
+						<div class="panel-heading"
+							style="background: #e6e6e6; color: #000000; border-color: #e6e6e6"
+							align="center">
+							<h3 class="panel-title">Confirmação de registro</h3>
+						</div>
+						<div class="panel-body">
+							<p:panelGrid>
+								<h:outputText
+									value="Confirmação de cadastro realizada com sucesso! Aguarde a confirmação por parte dos administradores do sistema."
+									rendered="#{usuarioAddEditMB.usuario.statusGeral == false}"
+									style="font-size:120%" />
+								<h:outputText
+									value="Confirmação de cadastro realizada com sucesso! Você já pode acessar o sistema."
+									rendered="#{usuarioAddEditMB.usuario.statusGeral== true}"
+									style="font-size:120%" />
+							</p:panelGrid>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

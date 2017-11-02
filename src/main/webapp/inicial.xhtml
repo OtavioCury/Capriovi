@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Capriovi</title>
+
+	<style type="text/css">
+.ui-growl {
+	top: 110px;
+}
+</style>
+
+	<link rel="stylesheet" type="text/css"
+		href="resources/bootstrap/css/bootstrap.min.css" />
+
+	<link href="resources/site/css/site.min.css" rel="stylesheet"
+		type="text/css" />
+
+	<link href="resources/site/css/font-awesome.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		rel="stylesheet" type="text/css" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		rel="stylesheet" type="text/css" />
+</h:head>
+
+<body id="page-top" class="index">
+
+	<!-- Navigation -->
+	<nav id="mainNav"
+		class="navbar navbar-default navbar-fixed-top navbar-custom">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="#page-top">Capriovi</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="hidden"><a href="#page-top"></a></li>
+					<li class="page-scroll"><a href="#page-top">Início</a></li>
+					<li class="page-scroll"><a href="#portfolio">Serviços</a></li>
+					<li class="page-scroll"><a href="#about">Sobre</a></li>
+					<li class="page-scroll"><a href="#contact">Contato</a></li>
+					<li class="page-scroll"><a href="login.xhtml">Login/Cadastro</a>
+					</li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+
+	<!-- Header -->
+	<header>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<img class="img-responsive" src="resources/images/site/logo.png"
+						alt="" />
+					<div class="intro-text">
+						<span class="name">Capriovi</span>
+						<hr class="star-light" />
+						<span class="skills">Sistema de gerenciamento completo de
+							rebanhos</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Portfolio Grid Section -->
+	<section id="portfolio">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<h2>Serviços</h2>
+					<hr class="star-primary" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4 portfolio-item">
+					<a href="#portfolioModal1" class="portfolio-link"
+						data-toggle="modal">
+						<div class="caption">
+							<div class="caption-content">
+								<i class="fa fa-search-plus fa-3x"></i>
+							</div>
+						</div> <img src="resources/images/site/melhoramento.png"
+						class="img-responsive" alt="" />
+					</a>
+				</div>
+				<div class="col-sm-4 portfolio-item">
+					<a href="#portfolioModal2" class="portfolio-link"
+						data-toggle="modal">
+						<div class="caption">
+							<div class="caption-content">
+								<i class="fa fa-search-plus fa-3x"></i>
+							</div>
+						</div> <img src="resources/images/site/santaInes.png"
+						class="img-responsive" alt="" />
+					</a>
+				</div>
+				<div class="col-sm-4 portfolio-item">
+					<a href="#portfolioModal3" class="portfolio-link"
+						data-toggle="modal">
+						<div class="caption">
+							<div class="caption-content">
+								<i class="fa fa-search-plus fa-3x"></i>
+							</div>
+						</div> <img src="resources/images/site/producao.png"
+						class="img-responsive" alt="" />
+					</a>
+				</div>
+				<div class="col-sm-4 portfolio-item">
+					<a href="#portfolioModal4" class="portfolio-link"
+						data-toggle="modal">
+						<div class="caption">
+							<div class="caption-content">
+								<i class="fa fa-search-plus fa-3x"></i>
+							</div>
+						</div> <img src="resources/images/site/reproducao.png"
+						class="img-responsive" alt="" />
+					</a>
+				</div>
+				<div class="col-sm-4 portfolio-item">
+					<a href="#portfolioModal5" class="portfolio-link"
+						data-toggle="modal">
+						<div class="caption">
+							<div class="caption-content">
+								<i class="fa fa-search-plus fa-3x"></i>
+							</div>
+						</div> <img src="resources/images/site/genetico.png"
+						class="img-responsive" alt="" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- About Section -->
+	<section class="success" id="about">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<h2>Sobre</h2>
+					<hr class="star-light" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-lg-offset-2">
+					<p align="justify">O CAPRIOVI é um software de gerenciamento
+						completo de rebanhos de caprinos e ovinos e foi desenvolvido pelo
+						Grupo de Estudo em Melhoramento Genético Animal (GEMA) em parceria
+						com o Laboratório de Otimização de Software e Testes (LOST) da
+						Universidade Federal do Piauí (UFPI).</p>
+				</div>
+				<div class="col-lg-4">
+					<p align="justify">O processo de atuação do CAPRIOVI é inovador
+						e apresenta um conjunto de características únicas, tais como o
+						controle e gerenciamento de rebanhos, geração de relatórios de
+						produção, reprodução e genéticos, além de seleção e indicação de
+						acasalamentos.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Contact Section -->
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<h2>Contato</h2>
+					<hr class="star-primary" />
+					<br />
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-2">
+							<p align="justify">A equipe do Software CAPRIOVI tem por
+								finalidade auxiliar o produtor no controle zootécnico, gestão
+								genética, seleção e orientação de acasalamentos de caprinos e
+								ovinos de corte.</p>
+						</div>
+						<div class="col-lg-4">
+							<p align="justify">Envie sua mensagem com dúvidas, críticas
+								ou sugestões! Preencha os campos abaixo e clique no botão
+								enviar! Se preferir envie sua mensagem diretamente para nossos
+								e-mails de contato.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br /> <br />
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
+					<!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
+					<h:form>
+
+						<p:growl id="msg" showDetail="true" />
+						<div class="row control-group">
+							<div class="input-group input-group-lg">
+								<p:inputText id="name" styleClass="form-control"
+									style="width:200%" placeholder="Nome" required="true"
+									value="#{mensagemMB.nome}" />
+								<p class="help-blocktext-danger"></p>
+							</div>
+						</div>
+						<br />
+						<div class="row control-group">
+							<div class="input-group input-group-lg">
+								<p:inputText id="email" styleClass="form-control"
+									style="width:200%" placeholder="Seu email" required="true"
+									value="#{mensagemMB.email}"
+									validatorMessage="Este E-mail não é válido">
+									<f:validateRegex
+										pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+								</p:inputText>
+
+								<p class="help-blocktext-danger"></p>
+							</div>
+						</div>
+						<br />
+						<div class="row control-group">
+							<div class="input-group input-group-lg">
+								<p:inputText id="assunto" styleClass="form-control"
+									style="width:200%" placeholder="Assunto" required="true"
+									value="#{mensagemMB.assunto}" />
+								<p class="help-blocktext-danger"></p>
+							</div>
+						</div>
+						<br />
+						<div class="row control-group">
+							<div class="input-group input-group-lg">
+								<p:inputTextarea id="menssagem" styleClass="form-control"
+									style="width:300%" placeholder="Menssagem" autoResize="true"
+									required="true" value="#{mensagemMB.mensagem}" />
+								<p class="help-blocktext-danger"></p>
+							</div>
+						</div>
+						<br />
+						<div id="success"></div>
+						<div class="row">
+							<div class="form-group col-xs-12">
+								<p:commandButton styleClass="btn btn-success btn-lg"
+									value="Enviar" actionListener="#{mensagemMB.enviarMenssagem()}"
+									resetValues="true" update="msg" />
+							</div>
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer class="text-center">
+		<div class="footer-above">
+			<div class="container">
+				<div class="row">
+					<div class="footer-col col-md-4">
+						<h3>Local</h3>
+						<p>
+							Universidade Federal do Piauí <br />Teresina, Brasil
+						</p>
+					</div>
+					<div class="footer-col col-md-4">
+						<h3>Pela internet</h3>
+						<ul class="list-inline">
+							<li><a href="#" class="btn-social btn-outline"><i
+									class="fa fa-fw fa-facebook"></i></a></li>
+							<li><a href="#" class="btn-social btn-outline"><i
+									class="fa fa-fw fa-google-plus"></i></a></li>
+							<!-- 							<li><a href="#" class="btn-social btn-outline"><i -->
+							<!-- 									class="fa fa-fw fa-twitter"></i></a></li> -->
+							<li><a href="#" class="btn-social btn-outline"><i
+									class="fa fa-fw fa-linkedin"></i></a></li>
+							<!-- 							<li><a href="#" class="btn-social btn-outline"><i -->
+							<!-- 									class="fa fa-fw fa-dribbble"></i></a></li> -->
+						</ul>
+					</div>
+					<div class="footer-col col-md-4">
+						<h3>Email Capriovi</h3>
+						<p>capriovi.easii@gmail.com</p>
+						<!-- 						<p>suporteCAPRIOVI@yahoo.com</p> -->
+						<!-- 						<p>suporteCAPRIOVI@outlook.com</p> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer-below">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						Copyright 2015-2016 <a href="http://www.ufpi.br/"
+							style="color: #3385ff">LOST</a>&amp;<a style="color: #00ff00">GEMA</a>
+						All rights reserved.
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+	<div
+		class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
+		<a class="btn btn-primary" href="#page-top"> <i
+			class="fa fa-chevron-up"></i>
+		</a>
+	</div>
+
+	<!-- Portfolio Modals -->
+	<div class="portfolio-modal modal fade" id="portfolioModal1"
+		tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-content">
+			<div class="close-modal" data-dismiss="modal">
+				<div class="lr">
+					<div class="rl"></div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="modal-body">
+							<h2>Melhoramento genético</h2>
+							<hr class="star-primary" />
+							<img src="resources/images/site/melhoramento.png"
+								class="img-responsive img-centered" alt="" />
+							<p align="justify">O software CAPRIOVI aplica dois métodos de
+								seleção visando melhorar geneticamente o seu rebanho. O primeiro
+								método é a seleção individual ou massal, o mesmo deve ser
+								utilizado quando você tiver como objetivo selecionar e melhorar
+								apenas uma característica no seu rebanho. O segundo método é o
+								índice de seleção, onde através desse método é possível
+								selecionar várias características de uma única vez no rebanho.</p>
+							<p align="justify" style="text-indent: 3em">Após a seleção
+								dos melhores animais por um dos métodos, o software CAPRIOVI
+								indica os acasalamentos visando maximizar o ganho genético e
+								minimizar a endogamia média do rebanho. Com esse serviço seus
+								animais irão obter progênies (filhos) mais produtivos e com
+								menor endogamia/parentesco em relação aos demais animais do
+								rebanho, aumentando assim a produção da sua fazenda.</p>
+							<br />
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">
+								<i class="fa fa-times"></i> Fechar
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="portfolio-modal modal fade" id="portfolioModal2"
+		tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-content">
+			<div class="close-modal" data-dismiss="modal">
+				<div class="lr">
+					<div class="rl"></div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="modal-body">
+							<h2>Gerencie seus rebanhos</h2>
+							<hr class="star-primary" />
+							<img src="resources/images/site/santaInes.png"
+								class="img-responsive img-centered" alt="" />
+							<p align="justify">Por meio do Software CAPRIOVI você é
+								motivado a fazer a escrituração zootécnica informatizada do seu
+								rebanho, permitindo um gerenciamento mais eficiente do seu
+								rebanho e da propriedade como um todo. As principais vantagens
+								da escrituração zootécnica informatizada consistem em conhecer
+								melhor cada um dos animais do rebanho, identificar os mais
+								produtivos, os possíveis problemas que estejam ocorrendo,
+								otimizar o manejo, determinar melhores épocas para praticas
+								sanitárias e reprodutivas, identificar animais e famílias mais
+								sensíveis e propensos a enfermidade.</p>
+							<p align="justify" style="text-indent: 3em">Quanto mais
+								detalhadas as anotações maiores serão os benefícios extraídos
+								destas informações. Além disso, com a escrituração zootécnica
+								informatizada será possível agregar valor aos animais no momento
+								da venda, uma vez que o comprador está adquirindo junto com o
+								animal, um “certificado” com seu histórico e desempenho, o que
+								torna o produto mais competitivo.</p>
+							<br />
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">
+								<i class="fa fa-times"></i> Fechar
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="portfolio-modal modal fade" id="portfolioModal3"
+		tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-content">
+			<div class="close-modal" data-dismiss="modal">
+				<div class="lr">
+					<div class="rl"></div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="modal-body">
+							<h2>Relatório Zootécnicos de Produção</h2>
+							<hr class="star-primary" />
+							<img src="resources/images/site/producao.png"
+								class="img-responsive img-centered" alt="" />
+							<p align="justify">Os relatórios zootécnicos de produção
+								serão as saídas das informações otimizadas, de forma a facilitar
+								o entendimento e a tomada de decisão com tratamento matemático
+								para computar informações importantes do ponto de vista
+								zootécnico de produção. Fazem parte dos relatórios zootécnicos
+								de produção: Dados Zootécnicos do Rebanho, Quantidade de Animais
+								(Fêmeas e machos) do Rebanho, Curva de Crescimento do Rebanho,
+								Taxa de Natalidade e Mortalidade do Rebanho, Dados Zootécnicos
+								do Animal, Curva de Crescimento Animal, Genealogia Animal,
+								Gráfico de gerações conhecidas, Animais por Entrada,
+								Movimentação Animal, Número de Crias, CPM (Conformidade,
+								Precocidade e Musculatura), Espessura de Gordura, Olho de Lombo,
+								Ocorrências Clínicas, Controle de Parasitas e Vermifugação</p>
+							<br />
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">
+								<i class="fa fa-times"></i> Fechar
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="portfolio-modal modal fade" id="portfolioModal4"
+		tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-content">
+			<div class="close-modal" data-dismiss="modal">
+				<div class="lr">
+					<div class="rl"></div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="modal-body">
+							<h2>Relatório Zootécnicos de Reprodução</h2>
+							<hr class="star-primary" />
+							<img src="resources/images/site/reproducao.png"
+								class="img-responsive img-centered" alt="" />
+							<p align="justify">Os relatórios zootécnicos de reprodução
+								serão as saídas das informações otimizadas, de forma a facilitar
+								o entendimento e a tomada de decisão com tratamento matemático
+								para computar informações importantes do ponto de vista
+								zootécnico de reprodução. Fazem parte dos relatórios zootécnicos
+								de reprodução: Relatório Geral de Partos, Fêmeas em Idade
+								Reprodutiva, Perímetro Escrotal e Cobertura por Reprodutor.</p>
+							<br />
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">
+								<i class="fa fa-times"></i> Fechar
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="portfolio-modal modal fade" id="portfolioModal5"
+		tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-content">
+			<div class="close-modal" data-dismiss="modal">
+				<div class="lr">
+					<div class="rl"></div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="modal-body">
+							<h2>Relatório Genéticos</h2>
+							<hr class="star-primary" />
+							<img src="resources/images/site/genetico.png"
+								class="img-responsive img-centered" alt="" />
+							<p align="justify">Os relatórios genéticos serão as saídas
+								das informações otimizadas, de forma a facilitar o entendimento
+								e a tomada de decisão com tratamento matemático para computar
+								informações importantes do ponto de vista genético do rebanho.
+								Fazem parte dos relatórios genéticos: Intervalo de gerações,
+								Diferencial de seleção, ganho genético esperado e
+								Parentesco/endogamia.</p>
+							<br />
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">
+								<i class="fa fa-times"></i> Fechar
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery -->
+	<script src="resources/site/jquery/jquery.min.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="resources/bootstrap/js/bootstrap.min.js"></script>
+
+	<!-- Plugin JavaScript -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+	<!-- Contact Form JavaScript -->
+	<script src="resources/site/js/jqBootstrapValidation.js"></script>
+	<script src="resources/site/js/contact_me.js"></script>
+
+	<!-- Theme JavaScript -->
+	<script src="resources/site/js/freelancer.min.js"></script>
+
+</body>
+
+</html>

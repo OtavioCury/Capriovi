@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Rebanhos"
+				url="/pages/entidades/rebanho/list.xhtml" />
+			<p:menuitem value="Cadastro Rebanho"
+				url="/pages/entidades/rebanho/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br></br>
+		<br></br>
+
+		<h:form>
+			<p:growl id="msg" life="3000" />
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2"
+					align="center">
+					<h3 class="panel-title" style="font-weight: bold;">#{rebanhoAddEditMB.title}</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="#{labels.rebanho_name}: " for="nome" />
+							<p:inputText id="nome" value="#{rebanhoAddEditMB.rebanho.nome}"
+								required="true">
+							</p:inputText>
+
+							<p:outputLabel for="criacao" value="Espécie: " />
+							<p:selectOneMenu id="criacao"
+								value="#{rebanhoAddEditMB.criacaoNome}" required="true">
+								<f:selectItem itemLabel="#{labels.selecione_criacao}"
+									itemValue="-" noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_caprinos}"
+									itemValue="Caprinos" />
+								<f:selectItem itemLabel="#{labels.selecione_ovinos}"
+									itemValue="Ovinos" />
+								<f:selectItem itemLabel="#{labels.selecione_ambos}"
+									itemValue="Ambos" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="manejo" value="#{labels.rebanho_manejo}: " />
+							<p:selectOneMenu id="manejo"
+								value="#{rebanhoAddEditMB.manejoNome}" required="true">
+								<f:selectItem itemLabel="#{labels.selecione_manejo}"
+									itemValue="-" noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_extensivo}"
+									itemValue="Extensivo" />
+								<f:selectItem itemLabel="#{labels.selecione_semi}"
+									itemValue="Semi-Intensivo" />
+								<f:selectItem itemLabel="#{labels.selecione_intensivo}"
+									itemValue="Intensivo" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="producao" value="Produção: " />
+							<p:selectOneMenu id="producao"
+								value="#{rebanhoAddEditMB.finalidadeNome}" required="true">
+								<f:selectItem itemLabel="Produção" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_carne}"
+									itemValue="Carne" />
+								<f:selectItem itemLabel="#{labels.selecione_leite}"
+									itemValue="Leite" />
+								<f:selectItem itemLabel="#{labels.selecione_misto}"
+									itemValue="Misto" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+					</div>
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+
+					<p:commandButton value="#{labels.button_cancel}"
+						action="/pages/entidades/rebanho/list.xhtml?faces-redirect=true"
+						actionListener="#{rebanhoAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+					<p:commandButton value="#{labels.button_save}"
+						action="/pages/entidades/rebanho/list.xhtml?faces-redirect=true"
+						actionListener="#{rebanhoAddEditMB.save}"
+						style="margin: 130 auto;margin-left:2%" ajax="false"
+						icon="ui-icon-disk" />
+				</p:outputPanel>
+			</p:row>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

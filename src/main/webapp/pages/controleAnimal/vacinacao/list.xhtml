@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Litagem de vacinações"
+				url="/pages/controleAnimal/vacinacao/list.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br />
+		<br />
+		<div align="center">
+			<div class="panel panel-default" style="width: 95%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title" style="font-weight: bold;">#{labels.vacinacao}</h3>
+				</div>
+				<div class="panel-body">
+
+
+					<h:form id="vacinacaoForm">
+
+						<div align="right">
+							<p:commandButton widgetVar="addButton"
+								value="#{labels.button_add} uma vacinação"
+								action="/pages/controleAnimal/vacinacao/addEdit.xhtml?faces-redirect=true"
+								ajax="false" actionListener="#{vacinacaoAddEditMB.add}"
+								icon="fa fa-plus"
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}" />
+						</div>
+
+						<br />
+
+						<p:dataTable id="vacinacaoDataTable" rowKey="#{vacinacao.id}"
+							widgetVar="dataTable" var="vacinacao"
+							value="#{vacinacaoMB.vacinacao}" paginator="true" rows="10"
+							sortMode="multiple" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+					{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.vacinacao_load}" resizableColumns="true"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							draggableColumns="true">
+
+							<f:facet name="header">
+								<h6>
+									#{labels.vacinacao_cadastrada}
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="vacinacaoDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{vacinacao.data}" filterBy="#{vacinacao.data}"
+								style="text-align: center">
+								<f:facet name="header">
+									<h:outputText value="#{labels.carcaca_data}" />
+								</f:facet>
+								<h:outputText value="#{vacinacao.data}" />
+							</p:column>
+
+
+							<p:column sortBy="#{vacinacao.medicamento.nome}"
+								filterBy="#{vacinacao.medicamento.nome}"
+								style="text-align: center">
+								<f:facet name="header">
+									<h:outputText value="Medicamento" />
+								</f:facet>
+								<h:outputText value="#{vacinacao.medicamento.nome}" />
+							</p:column>
+
+							<p:column exportable="false">
+								<f:facet name="header">
+									<h:outputText value="Opções" />
+								</f:facet>
+
+								<div align="center">
+
+									<p:commandButton icon="fa fa-search"
+										action="/pages/controleAnimal/vacinacao/vacinacao.xhtml?faces-redirect=true"
+										actionListener="#{vacinacaoAddEditMB.update(vacinacao)}"
+										ajax="false" />
+
+									<p:commandButton widgetVar="updateButton"
+										value="#{labels.button_update}" update="vacinacaoDataTable"
+										action="/pages/controleAnimal/vacinacao/addEdit.xhtml?faces-redirect=true"
+										actionListener="#{vacinacaoAddEditMB.update(vacinacao)}"
+										icon="fa fa-refresh" ajax="false" />
+
+									<p:commandButton widgetVar="deleteButton"
+										value="#{labels.button_delete}"
+										actionListener="#{vacinacaoMB.deletaVacinacao(vacinacao)}"
+										update="vacinacaoDataTable" icon="fa fa-trash"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:confirm header="Confirmação"
+											message="Deseja deletar essa vacinação?" icon="ui-icon-alert" />
+									</p:commandButton>
+
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade" responsive="true" closeOnEscape="true">
+										<div align="center">
+											<p:commandButton value="Sim" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+												style="background: #ff3333; border-color: #ff3333" />
+											<p:commandButton value="Não" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</div>
+									</p:confirmDialog>
+
+								</div>
+							</p:column>
+						</p:dataTable>
+
+						<div align="right">
+							<b>Opções de exportação: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="vacinacaoDataTable"
+									fileName="Vacinações da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="vacinacaoDataTable"
+									fileName="Vacinações da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="vacinacaoDataTable"
+									fileName="Vacinações da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</h:form>
+				</div>
+				<div class="panel-footer" align="left">Vacinações Cadastradas</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

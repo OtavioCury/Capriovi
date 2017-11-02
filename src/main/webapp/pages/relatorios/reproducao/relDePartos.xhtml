@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Relatório de Partos"
+				url="/pages/relatorios/reproducao/relDePartos.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="rebanhoForm">
+			<p:growl id="msg" showDetail="true" />
+			<p:panel id="custom" header="Relatório de Partos"
+				style="margin-bottom:20px; text-align:center; ">
+				<f:facet name="actions">
+					<p:commandLink
+						styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						oncomplete="PF('descRel').show()">
+						<h:outputText styleClass="ui-icon ui-icon-help" />
+					</p:commandLink>
+				</f:facet>
+				<div class="panel-body">
+
+					<p:wizard flowListener="#{relDePartosMB.onFlowProcess}"
+						backLabel="Voltar" nextLabel="Gerar Relatório"
+						widgetVar="myWizard">
+						<p:tab id="escolheRebanho" title="Rebanho">
+							<p:messages id="msgs" showDetail="false" life="2000"
+								closable="true" />
+							<div class="panel-body">
+								<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+									var="rebanho" value="#{relDePartosMB.rebanhos}"
+									paginator="true" rows="10" sortMode="multiple"
+									paginatorPosition="bottom" resizableColumns="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{relDePartosMB.rebanhosMarcados}"
+									rowKey="#{rebanho.id}" reflow="true"
+									emptyMessage="Nenhum registro encontrado">
+									<f:facet name="header">
+										<h6>Selecione os rebanhos a serem analisados</h6>
+									</f:facet>
+									<p:column selectionMode="multiple"
+										style="width:45px;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.nome}" />
+									</p:column>
+
+									<p:column sortBy="#{rebanho.fazenda.nome}"
+										filterBy="#{rebanho.fazenda.nome}">
+										<f:facet name="header">
+											<h:outputText value="Fazenda" />
+										</f:facet>
+										<h:outputText value="#{rebanho.fazenda.nome}" />
+									</p:column>
+
+								</p:dataTable>
+								<br />
+
+								<div class="ui-fluid">
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										layout="grid"
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+										<p:outputLabel value="Inicio: " for="inicio" />
+										<p:calendar id="inicio" value="#{relDePartosMB.inicio}"
+											validatorMessage="A data deve ser passado"
+											pattern="dd/MM/yyyy" mask="true">
+											<p:ajax event="dateSelect"
+												listener="#{calendarView.onDateSelect}" update="msg" />
+										</p:calendar>
+
+										<p:outputLabel value="Fim: " for="fim" />
+										<p:calendar id="fim" value="#{relDePartosMB.fim}"
+											validatorMessage="A data deve ser passado"
+											pattern="dd/MM/yyyy" mask="true">
+											<p:ajax event="dateSelect"
+												listener="#{calendarView.onDateSelect}" update="msg" />
+										</p:calendar>
+									</p:panelGrid>
+								</div>
+							</div>
+						</p:tab>
+
+						<p:tab id="relatorio" title="Relatório">
+							<div align="center" class="panel-body">
+								<p:dataTable id="dataTable" widgetVar="dataTableWV"
+									value="#{relDePartosMB.resumoPartos}" var="animal"
+									paginator="true" rows="10" sortMode="multiple"
+									paginatorPosition="bottom" scrollable="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15"
+									loadingMessage="#{labels.animais_load}" reflow="true"
+									emptyMessage="Nenhuma informação encontrada">
+
+									<f:facet name="header">
+										<h5>Listagem</h5>
+									</f:facet>
+									<p:columnGroup type="header">
+
+										<p:row>
+											<p:column rowspan="2"
+												headerText="#{labels.animal_nomeNumero}" />
+											<p:column rowspan="2"
+												headerText="Intervalo de partos individuais" width="120" />
+											<p:column rowspan="2" headerText="Idade ao primeiro parto" />
+											<p:column rowspan="2" headerText="Média cio pós parto" />
+
+											<p:column colspan="4" headerText="Tipo de Partos" />
+
+											<p:column rowspan="2" headerText="Total" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Simples" />
+											<p:column headerText="Duplo" />
+											<p:column headerText="Triplo" />
+											<p:column headerText="Quadruplo" />
+
+										</p:row>
+
+									</p:columnGroup>
+									<p:column>
+										<h:outputText value="#{animal.animal.nomeNumero}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.intervaloPartos}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.idadePrimeiroParto}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.mediaCioPosParto}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.partoSimples}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.partoDuplo}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.partoTriplo}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.partoQuadr}" />
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{animal.total}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+								</p:dataTable>
+
+								<div align="right">
+									<b>Opções de exportação: </b>
+									<h:commandLink>
+										<p:graphicImage name="/images/pdf.jpg" width="24" />
+										<p:dataExporter type="pdf" target="AnimaisPorEntradaDT"
+											fileName="Relatório de Partos" pageOnly="false" />
+									</h:commandLink>
+									<h:commandLink>
+										<p:graphicImage name="/images/pdf.jpg" width="24" />
+										<p:dataExporter type="pdf" target="AnimaisPorEntradaDT"
+											fileName="Relatório de Partos" pageOnly="false" />
+									</h:commandLink>
+									<h:commandLink>
+										<p:graphicImage name="/images/csv.png" width="24" />
+										<p:dataExporter type="csv" target="AnimaisPorEntradaDT"
+											fileName="Relatório de Partos" pageOnly="false" />
+									</h:commandLink>
+								</div>
+
+							</div>
+						</p:tab>
+					</p:wizard>
+					<p:dialog header="Descrição do Relatório" widgetVar="descRel"
+						modal="true" showEffect="fade" resizable="true" width="800"
+						closeOnEscape="true" appendTo="@(body)" footer="Parto"
+						responsive="true" maximizable="true">
+						<p:outputPanel id="multiCarDetail" style="text-align:justify;">
+							<h5>O usuário terá que escolher na entrada do relatório o
+								rebanho o qual deseja obter o relatório e o intervalo de datas
+								que desejar (data início e data fim). Caso o usuário não tenha
+								indicado o intervalo de datas para o relatório, será retornado
+								todos as fêmeas que tenham registro de partos cadastradas no
+								sistema. A saída desse relatório será em formato de listagem,
+								contendo o nome/número do animal, intervalo de partos
+								individuais, idade ao primeiro parto, média cio pós-parto, tipo
+								de parto (simples, duplo, triplo e quádruplo) e o total de
+								partos. Esse relatório irá buscar os animais vivos do rebanho
+								selecionado e que tiveram algum registro de parto cadastrados no
+								sistema. Deve ser selecionado pelo menos um rebanho para
+								execução.</h5>
+						</p:outputPanel>
+					</p:dialog>
+				</div>
+			</p:panel>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Relatório de Movimentação Animal"
+				url="/pages/relatorios/producao/relMovimentacaoAnimal.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="rebanhoForm">
+			<p:growl id="msg" showDetail="true" />
+			<p:panel id="custom" header="Relatório de Movimentação Animal"
+				style="margin-bottom:20px; text-align:center; ">
+				<f:facet name="actions">
+					<p:commandLink
+						styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						oncomplete="PF('descRel').show()">
+						<h:outputText styleClass="ui-icon ui-icon-help" />
+					</p:commandLink>
+				</f:facet>
+				<div class="panel-body">
+
+					<p:wizard flowListener="#{relMovimentacaoAnimalMB.onFlowProcess}"
+						backLabel="Voltar" nextLabel="Gerar Relatório"
+						widgetVar="myWizard">
+						<p:tab id="escolheRebanho" title="Rebanho">
+							<p:messages id="msgs" showDetail="false" life="2000"
+								closable="true" />
+							<div class="panel-body">
+								<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+									var="rebanho" value="#{relMovimentacaoAnimalMB.rebanhos}"
+									paginator="true" rows="10" sortMode="multiple"
+									paginatorPosition="bottom" resizableColumns="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{relMovimentacaoAnimalMB.rebanhosMarcados}"
+									rowKey="#{rebanho.id}" reflow="true">
+									<f:facet name="header">
+										<h5>Selecione os rebanhos a serem analisados</h5>
+									</f:facet>
+									<p:column selectionMode="multiple"
+										style="width:45px;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.nome}" />
+									</p:column>
+
+									<p:column sortBy="#{rebanho.fazenda.nome}"
+										filterBy="#{rebanho.fazenda.nome}">
+										<f:facet name="header">
+											<h:outputText value="Fazenda" />
+										</f:facet>
+										<h:outputText value="#{rebanho.fazenda.nome}" />
+									</p:column>
+
+								</p:dataTable>
+								<br />
+								<div class="ui-fluid">
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										layout="grid"
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+										<p:outputLabel value="Motivo de Saída: " for="motivo" />
+										<p:selectOneMenu id="motivo"
+											value="#{relMovimentacaoAnimalMB.motivoSaida}">
+											<f:selectItems value="#{relMovimentacaoAnimalMB.list}" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Inicio: " for="inicio" />
+										<p:calendar id="inicio"
+											value="#{relMovimentacaoAnimalMB.inicio}"
+											validatorMessage="A data deve ser passado"
+											pattern="dd/MM/yyyy" mask="true"
+											locale="#{labels.calendario}">
+											<p:ajax event="dateSelect"
+												listener="#{calendarView.onDateSelect}" update="msg" />
+										</p:calendar>
+
+										<p:outputLabel value="Fim: " for="fim" />
+										<p:calendar id="fim" value="#{relMovimentacaoAnimalMB.fim}"
+											validatorMessage="A data deve ser passado"
+											pattern="dd/MM/yyyy" mask="true"
+											locale="#{labels.calendario}">
+											<p:ajax event="dateSelect"
+												listener="#{calendarView.onDateSelect}" update="msg" />
+										</p:calendar>
+									</p:panelGrid>
+								</div>
+							</div>
+						</p:tab>
+
+						<p:tab id="relatorio" title="Relatório Movimetação">
+							<div align="center" class="panel-body">
+								<p:dataTable id="resultDataTable" widgetVar="dataTable2"
+									value="#{relMovimentacaoAnimalMB.listagemMovimentacao}"
+									var="movimentacao" paginator="true" rows="10"
+									paginatorPosition="bottom" resizableColumns="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15"
+									loadingMessage="#{labels.animais_load}" reflow="true"
+									emptyMessage="Nenhum registro encontrado">
+
+									<f:facet name="header">
+										<h5>
+											Listagem
+											<p:commandButton id="toggler" type="button"
+												value="#{labels.coluna}" icon="ui-icon-calculator"
+												style="float:right" />
+											<p:columnToggler datasource="resultDataTable"
+												trigger="toggler" />
+										</h5>
+									</f:facet>
+
+									<p:column sortBy="#{movimentacao.animal.nomeNumero}"
+										filterBy="#{movimentacao.animal.nomeNumero}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.animal_nomeNumero}" />
+										</f:facet>
+										<h:outputText value="#{movimentacao.animal.nomeNumero}" />
+									</p:column>
+
+									<p:column sortBy="#{movimentacao.animal.sexo.descricao}"
+										filterBy="#{movimentacao.animal.sexo.descricao}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.animal_sexo}" />
+										</f:facet>
+										<h:outputText value="#{movimentacao.animal.sexo.descricao}" />
+									</p:column>
+
+									<p:column sortBy="#{movimentacao.data}"
+										filterBy="#{movimentacao.data}">
+										<f:facet name="header">
+											<h:outputText value="Data da Movimentação" />
+										</f:facet>
+										<h:outputText value="#{movimentacao.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-03:00" />
+										</h:outputText>
+									</p:column>
+
+									<p:column sortBy="#{movimentacao.motivoSaida.descricao}"
+										filterBy="#{movimentacao.motivoSaida.descricao}">
+										<f:facet name="header">
+											<h:outputText value="Tipo de Movimentação" />
+										</f:facet>
+										<h:outputText value="#{movimentacao.motivoSaida.descricao}" />
+									</p:column>
+
+									<p:column sortBy="#{movimentacao.animal.rebanho.nome}"
+										filterBy="#{movimentacao.animal.rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho}" />
+										</f:facet>
+										<h:outputText value="#{movimentacao.animal.rebanho.nome}" />
+									</p:column>
+
+								</p:dataTable>
+								<div align="right">
+									<b>Opções de exportação: </b>
+									<h:commandLink>
+										<p:graphicImage name="/images/pdf.jpg" width="24" />
+										<p:dataExporter type="pdf" target="resultDataTable"
+											fileName="Relatório Movimentação Animal" pageOnly="false" />
+									</h:commandLink>
+									<h:commandLink>
+										<p:graphicImage name="/images/excel.png" width="24" />
+										<p:dataExporter type="xls" target="resultDataTable"
+											fileName="Relatório Movimentação Animal" pageOnly="false" />
+									</h:commandLink>
+								</div>
+
+								<br />
+
+
+								<c:if
+									test="#{relMovimentacaoAnimalMB.listagemMovimentacao.size() != 0}">
+									<p:dataTable var="tipo"
+										value="#{relMovimentacaoAnimalMB.listTipos}"
+										id="resultDataTable2" widgetVar="dataTable3"
+										loadingMessage="#{labels.animais_load}" reflow="true"
+										resizableColumns="true">
+
+										<f:facet name="header">
+											<h5>Quantidade de movimentos x ano</h5>
+										</f:facet>
+
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="2" headerText="Tipo de movimento" />
+												<p:column colspan="#{relMovimentacaoAnimalMB.anos.size()}"
+													headerText="Anos" />
+											</p:row>
+											<p:row>
+												<ui:repeat value="#{relMovimentacaoAnimalMB.anos}" var="ano">
+													<p:column headerText="#{ano}" />
+												</ui:repeat>
+											</p:row>
+										</p:columnGroup>
+
+										<p:column>
+											<h:outputText value="#{tipo}" />
+										</p:column>
+
+										<p:columns value="#{relMovimentacaoAnimalMB.anos}" var="ano">
+											<h:outputText
+												value="#{relMovimentacaoAnimalMB.movimentosAno(tipo, ano)}" />
+										</p:columns>
+
+									</p:dataTable>
+									<div align="right">
+										<b>Opções de exportação: </b>
+										<h:commandLink>
+											<p:graphicImage name="/images/pdf.jpg" width="24" />
+											<p:dataExporter type="pdf" target="resultDataTable2"
+												fileName="Relatório Movimentação Animal" pageOnly="false" />
+										</h:commandLink>
+										<h:commandLink>
+											<p:graphicImage name="/images/excel.png" width="24" />
+											<p:dataExporter type="xls" target="resultDataTable2"
+												fileName="Relatório Movimentação Animal" pageOnly="false" />
+										</h:commandLink>
+										<h:commandLink>
+											<p:graphicImage name="/images/csv.png" width="24" />
+											<p:dataExporter type="csv" target="resultDataTable2"
+												fileName="Relatório Movimentação Animal" pageOnly="false" />
+										</h:commandLink>
+									</div>
+								</c:if>
+							</div>
+
+							<c:if
+								test="#{relMovimentacaoAnimalMB.listagemMovimentacao.size() != 0}">
+								<div align="center">
+									<p:chart type="pie"
+										model="#{relMovimentacaoAnimalMB.movimentacaoAnimal}"
+										style="width:600px;height:400px" responsive="true" />
+								</div>
+
+							</c:if>
+						</p:tab>
+					</p:wizard>
+					<p:dialog header="Descrição do Relatório" widgetVar="descRel"
+						modal="true" showEffect="fade" resizable="true" width="800"
+						closeOnEscape="true" appendTo="@(body)"
+						footer="Movimentação animal" responsive="true" maximizable="true">
+						<p:outputPanel id="multiCarDetail" style="text-align:justify;">
+							<h5>O usuário terá que escolher na entrada do relatório o
+								rebanho o qual deseja obter o relatório, o motivo de saída e o
+								intervalo de datas que desejar (data início e data fim). Caso o
+								usuário não tenha indicado o intervalo de datas para o
+								relatório, será retornado todos os animais com registro de
+								movimentação no sistema.</h5>
+							<h5>A saída desse relatório será em formato de listagem,
+								contendo o nome/número, código e sexo do animal, data e o tipo
+								de movimentação e o rebanho ao qual esse animal pertence. Esse
+								relatório irá buscar os animais vivos do rebanho selecionado e
+								que tiveram algum registro de movimentação cadastrados no
+								sistema. Deve ser selecionado pelo menos um rebanho para
+								execução.</h5>
+						</p:outputPanel>
+					</p:dialog>
+				</div>
+			</p:panel>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Avaliação genética"
+				url="/pages/relatorios/acasalamento/avaliacao.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="rebanhoForm">
+			<p:growl id="msg" showDetail="true" />
+
+			<p:panel id="custom" header="Relatório de avaliação genética"
+				style="margin-bottom:20px; text-align:center;">
+				<f:facet name="actions">
+					<p:commandLink
+						styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						oncomplete="PF('descRel').show()">
+						<h:outputText styleClass="ui-icon ui-icon-help" />
+					</p:commandLink>
+				</f:facet>
+				<div class="panel-body">
+					<p:wizard flowListener="#{relAvaliacaoGeneticaMB.onFlowProcess}"
+						backLabel="Voltar" nextLabel="Gerar Relatório"
+						widgetVar="myWizard">
+						<p:tab id="escolheRebanho" title="Rebanho">
+							<p:messages id="msgs" showDetail="false" life="2000"
+								closable="true" />
+							<div class="panel-body">
+								<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+									var="rebanho" value="#{relAvaliacaoGeneticaMB.rebanhos}"
+									paginator="true" rows="10" sortMode="multiple"
+									paginatorPosition="bottom" resizableColumns="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{relAvaliacaoGeneticaMB.rebanhosMarcados}"
+									rowKey="#{rebanho.id}" reflow="true">
+									<f:facet name="header">
+										<h5>Selecione um rebanho</h5>
+									</f:facet>
+
+									<p:column selectionMode="multiple"
+										style="width:45px;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.nome}" />
+									</p:column>
+
+									<p:column sortBy="#{rebanho.fazenda.nome}"
+										filterBy="#{rebanho.fazenda.nome}">
+										<f:facet name="header">
+											<h:outputText value="Fazenda" />
+										</f:facet>
+										<h:outputText value="#{rebanho.fazenda.nome}" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									layout="grid"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+									<p:outputLabel value="Herdabilidade: " for="herdabilidade" />
+									<p:inputNumber id="herdabilidade" required="true" 
+										value="#{relAvaliacaoGeneticaMB.herdabilidade}">
+										<f:validateDoubleRange minimum="0" maximum="1" />
+									</p:inputNumber>
+								</p:panelGrid>
+							</div>
+
+						</p:tab>
+						<p:tab id="escolha_animais" title="Escolha dos animais">
+							<br />
+							<br />
+							<h4>Selecione os machos</h4>
+							<p:pickList value="#{relAvaliacaoGeneticaMB.machos}" var="macho"
+								itemValue="#{macho}" itemLabel="#{macho.nomeNumero}"
+								removeAllLabel="Remover todos" addLabel="Selecionar"
+								moveUpLabel="Mover para cima" required="true"
+								requiredMessage="Escolha ao menos um macho"
+								moveBottomLabel="Mover para o fundo"
+								converter="animalPickListConverter"
+								moveDownLabel="Mover para baixo" addAllLabel="Selecionar todos"
+								removeLabel="Remover" moveTopLabel="Mover para o topo"
+								showSourceControls="true" showTargetControls="true"
+								showCheckbox="true" responsive="true" showSourceFilter="true"
+								showTargetFilter="true" filterMatchMode="contains">
+								<p:column>
+									<h:outputText value="#{macho.nomeNumero}" />
+								</p:column>
+							</p:pickList>
+							<br />
+							<h4>Selecione as fêmeas</h4>
+							<p:pickList value="#{relAvaliacaoGeneticaMB.femeas}" var="femea"
+								itemValue="#{femea}" itemLabel="#{femea.nomeNumero}"
+								removeAllLabel="Remover todos" addLabel="Selecionar"
+								moveUpLabel="Mover para cima" required="true"
+								moveBottomLabel="Mover para o fundo"
+								converter="animalPickListConverter"
+								requiredMessage="Escolha ao menos uma fêmea"
+								moveDownLabel="Mover para baixo" addAllLabel="Selecionar todos"
+								removeLabel="Remover" moveTopLabel="Mover para o topo"
+								showSourceControls="true" showTargetControls="true"
+								showCheckbox="true" responsive="true" showSourceFilter="true"
+								showTargetFilter="true" filterMatchMode="contains">
+								<p:column>
+									<h:outputText value="#{femea.nomeNumero}" />
+								</p:column>
+							</p:pickList>
+							<br />
+						</p:tab>
+						<p:tab id="resultado" title="Resultado">
+							<br />
+							<br />
+							<p:dataTable id="resultadoDataTable" var="animal"
+								value="#{relAvaliacaoGeneticaMB.retornaResultado()}"
+								paginator="true" rows="10" paginatorPosition="bottom"
+								resizableColumns="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20"
+								loadingMessage="#{labels.rebanho_load}" reflow="true">
+								<f:facet name="header" reflow="true" draggableColumns="true">
+									<h6>Sugestões de acasalamento</h6>
+
+								</f:facet>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Pai" />
+									</f:facet>
+									<h:outputText value="#{animal.pai.nomeNumero}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Mãe" />
+									</f:facet>
+									<h:outputText value="#{animal.mae.nomeNumero}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Valor genético médio" />
+									</f:facet>
+									<h:outputText value="#{animal.ganhoGenetico}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Endogamia média" />
+									</f:facet>
+									<h:outputText value="#{animal.endogamia}" />
+								</p:column>
+							</p:dataTable>
+							<br />
+						</p:tab>
+					</p:wizard>
+					<p:dialog header="Descrição do Relatório" widgetVar="descRel"
+						modal="true" showEffect="fade" resizable="true" width="800"
+						closeOnEscape="true" appendTo="@(body)"
+						footer="Avaliação genética" responsive="true" maximizable="true">
+						<p:outputPanel id="multiCarDetail" style="text-align:justify;">
+							<h5>Fazer.</h5>
+						</p:outputPanel>
+					</p:dialog>
+				</div>
+			</p:panel>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

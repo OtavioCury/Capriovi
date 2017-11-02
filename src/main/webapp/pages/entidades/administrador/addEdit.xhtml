@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Administradores"
+				url="/pages/entidades/administrador/list.xhtml" />
+			<p:menuitem value="Cadastro de Administrador"
+				url="/pages/entidades/administrador/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br></br>
+		<br></br>
+		<h:form>
+
+			<p:growl id="msg" life="3000" />
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title">#{administradorAddEditMB.title}</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="ui-fluid">
+
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Login: " for="username" />
+							<p:inputText id="username" label="Username"
+								placeholder="Username" required="true"
+								value="#{administradorAddEditMB.administrador.username}" />
+
+							<p:outputLabel value="Senha: " for="password" />
+							<p:password id="password" match="confirmPassword"
+								label="Password 1" required="true" placeholder="Password"
+								feedback="true"
+								value="#{administradorAddEditMB.administrador.password}"
+								promptLabel="Digite sua senha" weakLabel="Fraca"
+								strongLabel="Forte" goodLabel="Média">
+								<f:validateLength minimum="6" />
+							</p:password>
+
+							<p:outputLabel value="Confirmar senha: " for="confirmPassword" />
+							<p:password id="confirmPassword" label="Password 2"
+								required="true" placeholder="Confirm password"
+								value="#{administradorAddEditMB.administrador.password}">
+								<f:validateLength minimum="6" />
+							</p:password>
+
+							<p:outputLabel value="Nome: " for="nome" />
+							<p:inputText id="nome" label="Nome" placeholder="Nome"
+								required="true"
+								value="#{administradorAddEditMB.administrador.nome}" />
+
+							<p:outputLabel value="Endereço: " for="endereço" />
+							<p:inputText id="endereço" label="Endereço"
+								placeholder="Endereço" required="true"
+								value="#{administradorAddEditMB.administrador.endereco}" />
+
+							<p:outputLabel value="Estado: " for="estado" />
+							<p:selectOneMenu id="estado"
+								value="#{administradorAddEditMB.administrador.estado}">
+								<f:selectItem itemLabel="Selecionar Estado" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{administradorAddEditMB.estados}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Município: " for="municipio" />
+							<p:inputText id="municipio" label="Municipio"
+								placeholder="Municipio" required="true"
+								value="#{administradorAddEditMB.administrador.municipio}" />
+
+							<p:outputLabel value="Cpf: " for="cpf" />
+							<p:inputMask id="cpf"
+								value="#{administradorAddEditMB.administrador.cpf}"
+								mask="999.999.999.99" placeholder="cpf" required="true" />
+
+							<p:outputLabel value="Telefone (fixo): " for="telefone" />
+							<p:inputMask id="telefone"
+								value="#{administradorAddEditMB.administrador.telefone}"
+								mask="(99) 9999-9999" placeholder="telefone" />
+
+							<p:outputLabel value="Celular: " for="celular" />
+							<p:inputMask id="celular"
+								value="#{administradorAddEditMB.administrador.celular}"
+								mask="(99) 9 9999-9999" placeholder="celular" required="true" />
+
+							<p:outputLabel value="Email: " for="email" />
+							<p:inputText id="email" label="Email"
+								validatorMessage="Este E-mail não é válido" placeholder="email"
+								required="true"
+								value="#{administradorAddEditMB.administrador.email}">
+								<f:validateRegex
+									pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+							</p:inputText>
+
+
+						</p:panelGrid>
+					</div>
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+
+					<p:commandButton value="#{labels.button_cancel}"
+						action="/pages/entidades/administrador/list.xhtml?faces-redirect=true"
+						actionListener="#{administradorAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+					<p:commandButton value="Cadastrar" ajax="false"
+						validateClient="true" style="margin: 130 auto;margin-left:2%"
+						icon="ui-icon-check" action="#{administradorAddEditMB.save()}" />
+
+				</p:outputPanel>
+			</p:row>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

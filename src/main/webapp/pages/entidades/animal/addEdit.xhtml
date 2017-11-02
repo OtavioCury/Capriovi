@@ -1,0 +1,1432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Animais"
+				url="/pages/entidades/animal/list.xhtml" />
+			<p:menuitem value="Cadastro Animais"
+				url="/pages/entidades/animaL/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<p:growl id="msgs" life="3000" />
+		<br></br>
+		<br></br>
+		<h:inputHidden value="#{animalAddEditMB.animal.id}" />
+		<p:tabView>
+			<p:tab title="Informações do Animal">
+				<f:facet name="header">
+					<p:outputLabel value="#{animalAddEditMB.title}" />
+				</f:facet>
+				<h:form id="form">
+
+					<div class="ui-fluid">
+						<br />
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Rebanho:" for="rebanhoPojo" />
+							<p:autoComplete id="rebanhoPojo"
+								completeMethod="#{animalAddEditMB.completeRebanho}"
+								var="rebanho" itemLabel="#{rebanho}" itemValue="#{rebanho}"
+								value="#{animalAddEditMB.animal.rebanho.nome}"
+								forceSelection="true" required="true" dropdown="true"
+								placeholder="Nome do Rebanho">
+								<p:ajax listener="#{animalAddEditMB.onChangeRabanho}"
+									update="raca msgs" event="itemSelect" resetValues="true" />
+							</p:autoComplete>
+
+
+
+							<p:outputLabel value="#{labels.animal_nomeNumero}: "
+								for="nomeNumero" />
+							<p:inputText id="nomeNumero"
+								value="#{animalAddEditMB.animal.nomeNumero}" required="true">
+							</p:inputText>
+
+
+							<p:outputLabel value="#{labels.animal_nascimento}: "
+								for="nascimento" />
+							<p:calendar id="nascimento"
+								value="#{animalAddEditMB.animal.nascimento}"
+								validatorMessage="A data deve ser passado" required="true"
+								maxdate="#{animalAddEditMB.todayDate}" effect="fold"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+
+							<p:outputLabel for="sexo" value="#{labels.animal_sexo}: " />
+							<p:selectOneMenu id="sexo" value="#{animalAddEditMB.sexoNome}"
+								effect="fold" required="true">
+								<p:ajax update="particao" />
+								<f:selectItem itemLabel="#{labels.selecione_sexo}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_macho}"
+									itemValue="Macho" />
+								<f:selectItem itemLabel="#{labels.selecione_femea}"
+									itemValue="Fêmea" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="finalidade" value="Finalidade: " />
+							<p:selectOneMenu id="finalidade"
+								value="#{animalAddEditMB.finalidade}" effect="fold"
+								required="true">
+								<f:selectItem itemLabel="Selecione a Finalidade" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Reprodução" itemValue="Reprodução" />
+								<f:selectItem itemLabel="Produção" itemValue="Produção" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="motivoEntrada" value="Motivo de Entrada: " />
+							<p:selectOneMenu id="motivoEntrada"
+								value="#{animalAddEditMB.motivoEntrada}" effect="fold"
+								required="true">
+								<f:selectItem itemLabel="Selecione o Motivo" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Compra" itemValue="Compra" />
+								<f:selectItem itemLabel="Nascimento" itemValue="Nascimento" />
+								<f:selectItem itemLabel="Emprestimo" itemValue="Emprestimo" />
+								<f:selectItem itemLabel="Outros" itemValue="Outros" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="parto" value="#{labels.animal_tipoParto}: " />
+							<p:selectOneMenu id="parto" value="#{animalAddEditMB.partoNome}"
+								effect="fold">
+								<f:selectItem itemLabel="#{labels.selecione_tipo}" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_simples}"
+									itemValue="Simples" />
+								<f:selectItem itemLabel="#{labels.selecione_duplo}"
+									itemValue="Duplo" />
+								<f:selectItem itemLabel="#{labels.selecione_triplo}"
+									itemValue="Triplo" />
+								<f:selectItem itemLabel="#{labels.selecione_quadruplo}"
+									itemValue="Quádruplo" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Pai:" for="paiPojo" />
+							<p:autoComplete id="paiPojo"
+								completeMethod="#{animalAddEditMB.completeAnimalPai}" var="pai"
+								itemLabel="#{pai}" itemValue="#{pai}"
+								value="#{animalAddEditMB.nomePai}" forceSelection="true"
+								dropdown="true" placeholder="Nome/Número do Pai" />
+
+							<p:outputLabel for="raca" value="#{labels.raca}: " />
+							<p:selectOneMenu id="raca"
+								value="#{animalAddEditMB.animal.raca.nome}" effect="fold">
+								<f:selectItem itemLabel="#{labels.selecione_raca}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{animalAddEditMB.nomesRacas}" id="racas" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Mãe:" for="maePojo" />
+							<p:autoComplete id="maePojo"
+								completeMethod="#{animalAddEditMB.completeAnimalMae}" var="mae"
+								itemLabel="#{mae}" itemValue="#{mae}"
+								value="#{animalAddEditMB.nomeMae}" forceSelection="true"
+								dropdown="true" placeholder="Nome/Número da Mãe" />
+
+
+							<p:outputLabel for="compGenetico" value="Composição Genética: " />
+							<p:selectOneMenu id="compGenetico"
+								value="#{animalAddEditMB.compGenetico}" effect="fold">
+								<f:selectItem itemLabel="Selecione a Composição" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Puro por cruza"
+									itemValue="Puro por cruza" />
+								<f:selectItem itemLabel="Puro de origem"
+									itemValue="Puro de origem" />
+								<f:selectItem itemLabel="Mestiço" itemValue="Mestiço" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="categoria" value="Categoria: " />
+							<p:selectOneMenu id="categoria"
+								value="#{animalAddEditMB.categoria}" effect="fold">
+								<f:selectItem itemLabel="Selecione a Categoria" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Cabrito/Cabrita ou Borrego/Borrega"
+									itemValue="Cabrito/Cabrita ou Borrego/Borrega" />
+								<f:selectItem itemLabel="Marrãos e Marrãs"
+									itemValue="Marrãos e Marrãs" />
+								<f:selectItem itemLabel="Matriz ou Reprodutor"
+									itemValue="Matriz ou Reprodutor" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="particao" value="#{labels.animal_grau}: " />
+							<p:selectOneMenu id="particao"
+								value="#{animalAddEditMB.particaoNome}" effect="fold"
+								disabled="#{animalAddEditMB.sexoNome == 'Fêmea'}">
+								<f:selectItem itemLabel="#{labels.selecione_particao}"
+									itemValue="-" noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_nao}"
+									itemValue="Não" />
+								<f:selectItem itemLabel="#{labels.selecione_cauda}"
+									itemValue="Cauda" />
+								<f:selectItem itemLabel="#{labels.selecione_meio}"
+									itemValue="Meio" />
+								<f:selectItem itemLabel="#{labels.selecione_partido}"
+									itemValue="Partido" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="orelha" value="#{labels.animal_orelha}: " />
+							<p:selectOneMenu id="orelha" value="#{animalAddEditMB.orelha}"
+								effect="fold">
+								<f:selectItem itemLabel="#{labels.selecione_posicao}"
+									itemValue="-" noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_caida}"
+									itemValue="Caída" />
+								<f:selectItem itemLabel="#{labels.selecione_horizontal}"
+									itemValue="Horizontal" />
+								<f:selectItem itemLabel="#{labels.selecione_lanca}"
+									itemValue="Forma de Lança" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</div>
+					<br />
+
+					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+
+						<h:outputText value="#{labels.animal_observacao}: " />
+						<p:selectBooleanCheckbox
+							value="#{animalAddEditMB.animal.tipoBarba}"
+							style="margin-left:45px" itemLabel="#{labels.animal_tipoBarba}" />
+						<h:outputText />
+						<p:selectBooleanCheckbox
+							value="#{animalAddEditMB.animal.tipoBrinco}"
+							style="margin-left:45px" itemLabel="#{labels.animal_tipoBrinco}" />
+						<h:outputText />
+						<p:selectBooleanCheckbox
+							value="#{animalAddEditMB.animal.tipoCorno}"
+							style="margin-left:45px" itemLabel="#{labels.animal_tipoCorno}" />
+						<h:outputText />
+						<p:selectBooleanCheckbox
+							value="#{animalAddEditMB.animal.tetasSupranumerarias}"
+							style="margin-left:45px" itemLabel="#{labels.animal_teta}" />
+						<h:outputText />
+
+					</p:panelGrid>
+
+					<br></br>
+
+					<div style="width: 100%; text-align: center">
+						<br />
+
+						<p:commandButton value="#{labels.button_cancel}"
+							action="/pages/entidades/animal/list.xhtml?faces-redirect=true"
+							actionListener="#{animalAddEditMB.cancel}"
+							style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+							ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+						<p:commandButton value="#{labels.button_save}"
+							action="#{animalAddEditMB.save()}"
+							style="margin: 130 auto;margin-left:2%" ajax="false"
+							icon="ui-icon-disk" />
+					</div>
+					<br />
+				</h:form>
+			</p:tab>
+
+			<p:tab title="#{labels.desenvolvimentoPonderal}">
+				<h:form id="formCollector">
+					<p:growl id="msgs" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+
+							<p:outputLabel value="Data da mensuração: " for="data" />
+							<p:calendar id="data"
+								value="#{animalAddEditMB.desenvolvimentoPonderal.data}"
+								effect="fold" required="true"
+								validatorMessage="A data deve ser passado"
+								maxdate="#{animalAddEditMB.todayDate}"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+							<p:message for="data" />
+
+							<p:outputLabel for="desenvolvimentoTipo"
+								value="Período de mensuração: " />
+							<p:selectOneMenu id="desenvolvimentoTipo"
+								value="#{animalAddEditMB.desenvolvimento}" effect="fold">
+								<f:selectItem itemLabel="Período" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="#{labels.selecione_nasce}"
+									itemValue="Ao nascer" />
+								<f:selectItem itemLabel="#{labels.selecione_desmame}"
+									itemValue="Desmame" />
+								<f:selectItem itemLabel="#{labels.selecione_outros}"
+									itemValue="Outros" />
+							</p:selectOneMenu>
+							<p:message for="desenvolvimentoTipo" />
+
+							<p:outputLabel value="#{labels.desenvolvimentoPonderal_peso}: "
+								for="peso" />
+							<p:inputText id="peso"
+								value="#{animalAddEditMB.desenvolvimentoPonderal.peso}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="peso" />
+
+							<p:outputLabel
+								value="#{labels.desenvolvimentoPonderal_escoreCondicaoCorporal} (ECC): "
+								for="escoreCondicaoCorporal" />
+							<p:spinner id="escoreCondicaoCorporal"
+								value="#{animalAddEditMB.desenvolvimentoPonderal.escoreCondicaoCorporal}"
+								validatorMessage="O valor do escore deve ser um número inteiro de 1 a 5"
+								max="5" min="1" stepFactor="0.25" />
+							<p:message for="escoreCondicaoCorporal" />
+
+							<p:outputLabel value="Conformidade (C): " for="conformidade" />
+							<p:spinner id="conformidade"
+								value="#{animalAddEditMB.desenvolvimentoPonderal.conformidade}"
+								validatorMessage="O valor da conformidade deve ser um número de 1 a 5"
+								max="5" min="1" stepFactor="1">
+								<p:ajax update="media" />
+							</p:spinner>
+							<p:message for="conformidade" />
+
+							<p:outputLabel value="Precocidade (P): " for="precocidade" />
+							<p:spinner id="precocidade"
+								value="#{animalAddEditMB.desenvolvimentoPonderal.precocidade}"
+								validatorMessage="O valor da precocidade deve ser um número de 1 a 5"
+								max="5" min="1" stepFactor="1">
+								<p:ajax update="media" />
+							</p:spinner>
+							<p:message for="precocidade" />
+
+							<p:outputLabel value="Musculosidade (M): " for="musculosidade" />
+							<p:spinner id="musculosidade"
+								value="#{animalAddEditMB.desenvolvimentoPonderal.musculosidade}"
+								validatorMessage="O valor da musculosidade deve ser um número de 1 a 5"
+								max="5" min="1" stepFactor="1">
+								<p:ajax update="media" />
+							</p:spinner>
+							<p:message for="musculosidade" />
+
+						</p:panelGrid>
+
+						<br />
+
+						<p:outputLabel id="media"
+							value="Média CPM:  #{animalAddEditMB.cpm}"
+							style="margin-left:10px" />
+
+					</div>
+					<br />
+					<p:commandButton id="btn_reset" value="#{labels.button_reset}"
+						type="reset" icon="fa fa-remove"
+						style="background: #ff3333; border-color: #ff3333" />
+
+					<p:commandButton value="#{labels.button_add}"
+						update="desenvolvimentoPonderal msgs @parent"
+						action="#{animalAddEditMB.reinitDesenvolvimento()}"
+						style="margin-left:2%" icon="fa fa-plus">
+						<p:collector value="#{animalAddEditMB.desenvolvimentoPonderal}"
+							addTo="#{animalAddEditMB.animal.desenvolvimentoPonderal}"
+							unique="false" />
+					</p:commandButton>
+
+					<p:separator />
+
+					<p:outputPanel id="desenvolvimentoPonderal">
+
+						<p:dataTable
+							value="#{animalAddEditMB.animal.desenvolvimentoPonderal}"
+							var="desenvolvimento" id="desenvolvimentoPonderalTable"
+							reflow="true" editable="true" editMode="cell" paginator="true"
+							emptyMessage="Nenhum cadastro encontrado" scrollable="true">
+							<f:facet name="header">
+								<h6>
+									Clique em uma célula da tabela para editá-la
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="desenvolvimentoPonderalTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column headerText="#{labels.desenvolvimentoPonderal_data}"
+								style="text-align: center" sortBy="#{verminose.data}"
+								filterBy="#{verminose.data}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{desenvolvimento.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar id="data" value="#{desenvolvimento.data}"
+											effect="fold" required="true"
+											validatorMessage="A data deve ser passado"
+											maxdate="#{animalAddEditMB.todayDate}"
+											locale="#{labels.calendario}" pattern="dd-MM-yyyy"
+											navigator="true">
+										</p:calendar>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.peso}" style="text-align: center"
+								sortBy="#{desenvolvimento.peso}"
+								filterBy="#{desenvolvimento.peso}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{desenvolvimento.peso}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="peso" value="#{desenvolvimento.peso}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.desenvolvimentoPonderal_escore}"
+								style="text-align: center"
+								sortBy="#{desenvolvimento.escoreCondicaoCorporal}"
+								filterBy="#{desenvolvimento.escoreCondicaoCorporal}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											value="#{desenvolvimento.escoreCondicaoCorporal}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{desenvolvimento.escoreCondicaoCorporal}"
+											validatorMessage="O valor do escore deve ser um número inteiro de 1 a 5">
+											<f:validateDoubleRange minimum="1" maximum="5" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Conformação" style="text-align: center"
+								sortBy="#{desenvolvimento.conformidade}"
+								filterBy="#{desenvolvimento.conformidade}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{desenvolvimento.conformidade}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{desenvolvimento.conformidade}"
+											validatorMessage="O valor da conformidade deve ser um número de 1 a 5"
+											immediate="true">
+											<f:validateDoubleRange minimum="1" maximum="5" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Precocidade" style="text-align: center"
+								sortBy="#{desenvolvimento.precocidade}"
+								filterBy="#{desenvolvimento.precocidade}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{desenvolvimento.precocidade}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{desenvolvimento.precocidade}"
+											validatorMessage="O valor da precocidade deve ser um número de 1 a 5"
+											immediate="true">
+											<f:validateDoubleRange minimum="1" maximum="5" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Musculosidade" style="text-align: center"
+								sortBy="#{desenvolvimento.musculosidade}"
+								filterBy="#{desenvolvimento.musculosidade}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{desenvolvimento.musculosidade}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{desenvolvimento.musculosidade}"
+											validatorMessage="O valor da musculosidade deve ser um número de 1 a 5"
+											immediate="true">
+											<f:validateDoubleRange minimum="1" maximum="5" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.coluna_acao}">
+								<div align="center">
+									<p:commandButton value="#{labels.button_remove}" update="@form"
+										process="@this" icon="fa fa-remove"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:collector value="#{desenvolvimento}"
+											removeFrom="#{animalAddEditMB.animal.desenvolvimentoPonderal}"
+											unique="true" />
+									</p:commandButton>
+								</div>
+							</p:column>
+
+						</p:dataTable>
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink>
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="desenvolvimentoPonderalTable"
+									fileName="Desenvolvimento do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+							<h:commandLink>
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="desenvolvimentoPonderalTable"
+									fileName="Desenvolvimento do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+						</div>
+					</p:outputPanel>
+				</h:form>
+
+			</p:tab>
+
+			<p:tab title="#{labels.verminose}">
+				<h:form>
+					<p:growl id="msgs" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+
+							<p:outputLabel value="Data da mensuração: " for="data" />
+							<p:calendar id="data" value="#{animalAddEditMB.verminose.data}"
+								effect="fold" validatorMessage="A data deve ser passado"
+								maxdate="#{animalAddEditMB.todayDate}" required="true"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy"
+								navigator="true">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+							<p:message for="data" />
+
+							<p:outputLabel
+								value="#{labels.verminose_ovosPorGramaDeFazes} (OPG): "
+								for="ovosPorGramaDeFazes" />
+							<p:spinner id="ovosPorGramaDeFazes"
+								value="#{animalAddEditMB.verminose.ovosPorGramaDeFazes}"
+								max="5000" min="0" stepFactor="100" />
+							<p:message for="ovosPorGramaDeFazes" />
+
+							<p:outputLabel value="#{labels.verminose_famacha}: "
+								for="famacha" />
+							<p:spinner id="famacha"
+								value="#{animalAddEditMB.verminose.famacha}" max="5" min="1"
+								stepFactor="1"
+								validatorMessage="O valor de famacha deve ser um número de 1 a 5" />
+							<p:message for="famacha" />
+
+							<p:outputLabel value="Pêlos Arrepiados" for="pelos" />
+							<p:selectBooleanButton id="pelos"
+								value="#{animalAddEditMB.verminose.pelosArrepiados}"
+								onLabel="Presença" offLabel="Ausência" onIcon="ui-icon-check"
+								offIcon="ui-icon-close" />
+							<p:message for="pelos" />
+
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:commandButton id="btn_reset" value="#{labels.button_reset}"
+						type="reset" icon="fa fa-remove"
+						style="background: #ff3333; border-color: #ff3333" />
+
+					<p:commandButton value="#{labels.button_add}"
+						update="verminose msgs @parent"
+						action="#{animalAddEditMB.reinitVerminose()}"
+						style="margin-left:2%" icon="fa fa-plus">
+						<p:collector value="#{animalAddEditMB.verminose}"
+							addTo="#{animalAddEditMB.animal.verminose}" unique="false" />
+					</p:commandButton>
+					<p:separator />
+
+					<p:outputPanel id="verminose">
+
+						<p:dataTable value="#{animalAddEditMB.animal.verminose}"
+							var="verminose" id="verminoseTable" reflow="true" editable="true"
+							editMode="cell" paginator="true"
+							emptyMessage="Nenhum cadastro encontrado" scrollable="true">
+
+							<f:facet name="header">
+								<h6>
+									Clique em uma célula da tabela para editá-la
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="verminoseTable" trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column headerText="#{labels.verminose_ovosPorGramaDeFazes}"
+								style="text-align: center"
+								sortBy="#{verminose.ovosPorGramaDeFazes}"
+								filterBy="#{verminose.ovosPorGramaDeFazes}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{verminose.ovosPorGramaDeFazes}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{verminose.ovosPorGramaDeFazes}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.verminose_data}"
+								style="text-align: center" sortBy="#{verminose.data}"
+								filterBy="#{verminose.data}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{verminose.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar id="data" value="#{verminose.data}" effect="fold"
+											validatorMessage="A data deve ser passado"
+											maxdate="#{animalAddEditMB.todayDate}" required="true"
+											locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+										</p:calendar>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.verminose_famacha}"
+								style="text-align: center" sortBy="#{verminose.famacha}"
+								filterBy="#{verminose.famacha}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{verminose.famacha}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="famacha" value="#{verminose.famacha}"
+											validatorMessage="O valor do escore deve ser um número de 1 a 5">
+											<f:validateDoubleRange minimum="1" maximum="5" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Pêlos arrepiados"
+								style="text-align: center">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="Presença"
+											rendered="#{verminose.pelosArrepiados == true}" />
+										<h:outputText value="Ausência"
+											rendered="#{verminose.pelosArrepiados == false}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectBooleanButton id="pelos"
+											value="#{animalAddEditMB.verminose.pelosArrepiados}"
+											onLabel="Presença" offLabel="Ausência" onIcon="ui-icon-check"
+											offIcon="ui-icon-close" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.coluna_acao}">
+								<div align="center">
+									<p:commandButton value="#{labels.button_remove}" update="@form"
+										process="@this" icon="fa fa-remove"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:collector value="#{verminose}"
+											removeFrom="#{animalAddEditMB.animal.verminose}"
+											unique="true" />
+									</p:commandButton>
+								</div>
+							</p:column>
+						</p:dataTable>
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink>
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="verminoseTable"
+									fileName="Verminose do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+							<h:commandLink>
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="verminoseTable"
+									fileName="Verminose do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+						</div>
+					</p:outputPanel>
+				</h:form>
+			</p:tab>
+
+			<p:tab title="#{labels.tamanhoCorporal}">
+				<h:form>
+					<p:growl id="msgs" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Data da mensuração: " for="data" />
+							<p:calendar id="data"
+								value="#{animalAddEditMB.tamanhoCorporal.data}" effect="fold"
+								validatorMessage="A data deve ser passado"
+								maxdate="#{animalAddEditMB.todayDate}" required="true"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_alturaCernelha} (AC): "
+								for="alturaCernelha" />
+							<p:inputText id="alturaCernelha"
+								value="#{animalAddEditMB.tamanhoCorporal.alturaCernelha}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_alturaGarupa} (AG): "
+								for="alturaGarupa" />
+							<p:inputText id="alturaGarupa"
+								value="#{animalAddEditMB.tamanhoCorporal.alturaGarupa}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_comprimentoCorporal} (CC): "
+								for="comprimentoCorporal" />
+							<p:inputText id="comprimentoCorporal"
+								value="#{animalAddEditMB.tamanhoCorporal.comprimentoCorporal}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_alturaPerna} (AP): "
+								for="alturaPerna" />
+							<p:inputText id="alturaPerna"
+								value="#{animalAddEditMB.tamanhoCorporal.alturaPerna}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_perimetroCanela} (PC): "
+								for="perimetroCanela" />
+							<p:inputText id="perimetroCanela"
+								value="#{animalAddEditMB.tamanhoCorporal.perimetroCanela}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_comprimentoPerna} (Cpern): "
+								for="comprimentoPerna" />
+							<p:inputText id="comprimentoPerna"
+								value="#{animalAddEditMB.tamanhoCorporal.comprimentoPerna}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_perimetroPerna} (Perpe): "
+								for="perimetroPerna" />
+							<p:inputText id="perimetroPerna"
+								value="#{animalAddEditMB.tamanhoCorporal.perimetroPerna}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_circunferenciaToracica} (CT): "
+								for="circunferenciaToracica" />
+							<p:inputText id="circunferenciaToracica"
+								value="#{animalAddEditMB.tamanhoCorporal.circunferenciaToracica}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_comprimentoOrelha} (CO): "
+								for="comprimentoOrelha" />
+							<p:inputText id="comprimentoOrelha"
+								value="#{animalAddEditMB.tamanhoCorporal.comprimentoOrelha}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_comprimentoCabeca} (CCAB): "
+								for="comprimentoCabeca" />
+							<p:inputText id="comprimentoCabeca"
+								value="#{animalAddEditMB.tamanhoCorporal.comprimentoCabeca}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_longitudeRosto} (LR): "
+								for="longitudeRosto" />
+							<p:inputText id="longitudeRosto"
+								value="#{animalAddEditMB.tamanhoCorporal.longitudeRosto}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_larguraIleos} (LIL): "
+								for="larguraIleos" />
+							<p:inputText id="larguraIleos"
+								value="#{animalAddEditMB.tamanhoCorporal.larguraIleos}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_larguraIsquios} (LIS): "
+								for="larguraIsquios" />
+							<p:inputText id="larguraIsquios"
+								value="#{animalAddEditMB.tamanhoCorporal.larguraIsquios}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel value="Comprimento da garupa (Cga): "
+								for="comprimentoGarupa" />
+							<p:inputText id="comprimentoGarupa"
+								value="#{animalAddEditMB.tamanhoCorporal.comprimentoGarupa}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_comprimentoCauda} (Ccau): "
+								for="comprimentoCauda" />
+							<p:inputText id="comprimentoCauda"
+								value="#{animalAddEditMB.tamanhoCorporal.comprimentoCauda}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+
+							<p:outputLabel
+								value="#{labels.tamanhoCorporal_perimetroCauda} (Pcau): "
+								for="perimetroCauda" />
+							<p:inputText id="perimetroCauda"
+								value="#{animalAddEditMB.tamanhoCorporal.perimetroCauda}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:commandButton id="btn_reset" value="#{labels.button_reset}"
+						type="reset" icon="fa fa-remove"
+						style="background: #ff3333; border-color: #ff3333" />
+
+					<p:commandButton value="#{labels.button_add}"
+						update="tamanhoCorporal msgs @parent"
+						action="#{animalAddEditMB.reinitTamanho()}" style="margin-left:2%"
+						icon="fa fa-plus">
+						<p:collector value="#{animalAddEditMB.tamanhoCorporal}"
+							addTo="#{animalAddEditMB.animal.tamanhoCorporal}" unique="false" />
+					</p:commandButton>
+					<p:separator />
+
+					<p:outputPanel id="tamanhoCorporal">
+						<p:dataTable value="#{animalAddEditMB.animal.tamanhoCorporal}"
+							var="tamanhoCorporal" id="tamanhoCorporalTable" reflow="true"
+							editable="true" editMode="cell" paginator="true"
+							emptyMessage="Nenhum cadastro encontrado" scrollable="true"
+							rows="5">
+
+							<f:facet name="header">
+								<h6>
+									Clique em uma célula da tabela para editá-la
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="tamanhoCorporalTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column headerText="#{labels.verminose_data}"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.data}"
+								filterBy="#{tamanhoCorporal.data}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar value="#{tamanhoCorporal.data}" effect="fold"
+											validatorMessage="A data deve ser passado"
+											maxdate="#{animalAddEditMB.todayDate}" required="true"
+											locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+										</p:calendar>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_alturaCernelha}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.alturaCernelha}"
+								filterBy="#{tamanhoCorporal.alturaCernelha}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.alturaCernelha} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.alturaCernelha}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_alturaGarupa}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.alturaGarupa}"
+								filterBy="#{tamanhoCorporal.alturaGarupa}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.alturaGarupa} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.alturaGarupa}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_comprimentoCorporal}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.comprimentoCorporal}"
+								filterBy="#{tamanhoCorporal.comprimentoCorporal}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.comprimentoCorporal} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.comprimentoCorporal}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_alturaPerna}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.alturaPerna}"
+								filterBy="#{tamanhoCorporal.alturaPerna}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.alturaPerna} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.alturaPerna}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_perimetroCanela}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.perimetroCanela}"
+								filterBy="#{tamanhoCorporal.perimetroCanela}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.perimetroCanela} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.perimetroCanela}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_comprimentoPerna}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.comprimentoPerna}"
+								filterBy="#{tamanhoCorporal.comprimentoPerna}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.comprimentoPerna} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.comprimentoPerna}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_perimetroPerna}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.perimetroPerna}"
+								filterBy="#{tamanhoCorporal.perimetroPerna}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.perimetroPerna} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.perimetroPerna}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_circunferenciaToracica}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.circunferenciaToracica}"
+								filterBy="#{tamanhoCorporal.circunferenciaToracica}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											value="#{tamanhoCorporal.circunferenciaToracica}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.circunferenciaToracica}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_comprimentoOrelha}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.comprimentoOrelha}"
+								filterBy="#{tamanhoCorporal.comprimentoOrelha}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.comprimentoOrelha} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.comprimentoOrelha}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_comprimentoCabeca}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.comprimentoCabeca}"
+								filterBy="#{tamanhoCorporal.comprimentoCabeca}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.comprimentoCabeca} " />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.comprimentoCabeca}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_longitudeRosto}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.longitudeRosto}"
+								filterBy="#{tamanhoCorporal.longitudeRosto}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.longitudeRosto}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.longitudeRosto}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_larguraIleos}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.larguraIleos}"
+								filterBy="#{tamanhoCorporal.larguraIleos}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.larguraIleos}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.larguraIleos}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_larguraIsquios}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.larguraIsquios}"
+								filterBy="#{tamanhoCorporal.larguraIsquios}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.larguraIsquios}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.larguraIsquios}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_comprimentoGarupa}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.comprimentoGarupa}"
+								filterBy="#{tamanhoCorporal.comprimentoGarupa}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.comprimentoGarupa}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.comprimentoGarupa}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column
+								headerText="#{labels.tamanhoCorporal_comprimentoCauda}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.comprimentoCauda}"
+								filterBy="#{tamanhoCorporal.comprimentoCauda}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.comprimentoCauda}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.comprimentoCauda}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.tamanhoCorporal_perimetroCauda}:"
+								style="text-align: center" width="150"
+								sortBy="#{tamanhoCorporal.perimetroCauda}"
+								filterBy="#{tamanhoCorporal.perimetroCauda}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{tamanhoCorporal.perimetroCauda}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{tamanhoCorporal.perimetroCauda}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.coluna_acao}" width="150">
+								<div align="center">
+									<p:commandButton value="#{labels.button_remove}" update="@form"
+										process="@this" icon="fa fa-remove"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:collector value="#{tamanhoCorporal}"
+											removeFrom="#{animalAddEditMB.animal.tamanhoCorporal}"
+											unique="true" />
+									</p:commandButton>
+								</div>
+							</p:column>
+						</p:dataTable>
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink>
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="tamanhoCorporalTable"
+									fileName="Tamanho corporal do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+							<h:commandLink>
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="tamanhoCorporalTable"
+									fileName="Tamanho corporal do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+						</div>
+					</p:outputPanel>
+				</h:form>
+
+			</p:tab>
+
+			<p:tab title="#{labels.carcaca}">
+				<h:form>
+					<p:growl id="msgs" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+
+							<p:outputLabel value="Data da mensuração: " for="data" />
+							<p:calendar id="data" value="#{animalAddEditMB.carcaca.data}"
+								effect="fold" required="true"
+								validatorMessage="A data deve ser passado"
+								maxdate="#{animalAddEditMB.todayDate}"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+							<p:message for="data" />
+
+							<p:outputLabel value="#{labels.carcaca_areaDeOlhoLombo} (AOL): "
+								for="areaDeOlhoLombo" />
+							<p:inputText id="areaDeOlhoLombo"
+								value="#{animalAddEditMB.carcaca.areaDeOlhoLombo}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="areaDeOlhoLombo" />
+
+							<p:outputLabel value="#{labels.carcaca_compDeOlhoLombo} (COL): "
+								for="compDeOlhoLombo" />
+							<p:inputText id="compDeOlhoLombo"
+								value="#{animalAddEditMB.carcaca.compDeOlhoLombo}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="compDeOlhoLombo" />
+
+							<p:outputLabel value="#{labels.carcaca_profDeOlhoLombo} (POL): "
+								for="profDeOlhoLombo" />
+							<p:inputText id="profDeOlhoLombo"
+								value="#{animalAddEditMB.carcaca.profDeOlhoLombo}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="profDeOlhoLombo" />
+
+							<p:outputLabel value="#{labels.carcaca_marmoDeOlhoLombo} (MOL): "
+								for="marmoDeOlhoLombo" />
+							<p:inputText id="marmoDeOlhoLombo"
+								value="#{animalAddEditMB.carcaca.marmoDeOlhoLombo}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="marmoDeOlhoLombo" />
+
+							<p:outputLabel
+								value="#{labels.carcaca_espessuraGorduraSub} (EGS): "
+								for="espessuraGorduraSub" />
+							<p:inputText id="espessuraGorduraSub"
+								value="#{animalAddEditMB.carcaca.espessuraGorduraSub}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="espessuraGorduraSub" />
+
+							<p:outputLabel
+								value="#{labels.carcaca_espessuraGorduraBic} (EGBF): "
+								for="espessuraGorduraBic" />
+							<p:inputText id="espessuraGorduraBic"
+								value="#{animalAddEditMB.carcaca.espessuraGorduraBic}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="espessuraGorduraBic" />
+
+							<p:outputLabel
+								value="#{labels.carcaca_espessuraGorduraEst} (EGE): "
+								for="espessuraGorduraEst" />
+							<p:inputText id="espessuraGorduraEst"
+								value="#{animalAddEditMB.carcaca.espessuraGorduraEst}">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+							<p:message for="espessuraGorduraEst" />
+
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:commandButton id="btn_reset" value="#{labels.button_reset}"
+						type="reset" icon="fa fa-remove"
+						style="background: #ff3333; border-color: #ff3333" />
+
+					<p:commandButton value="#{labels.button_add}"
+						update="carcaca msgs @parent" icon="fa fa-plus"
+						action="#{animalAddEditMB.reinitCarcaca()}" style="margin-left:2%">
+						<p:collector value="#{animalAddEditMB.carcaca}"
+							addTo="#{animalAddEditMB.animal.carcaca}" unique="false" />
+					</p:commandButton>
+					<p:separator />
+
+					<p:outputPanel id="carcaca">
+						<p:dataTable value="#{animalAddEditMB.animal.carcaca}"
+							var="carcaca" id="carcacaTable" reflow="true" editable="true"
+							editMode="cell" paginator="true"
+							emptyMessage="Nenhum cadastro encontrado" rows="5">
+
+							<f:facet name="header">
+								<h6>
+									Clique em uma célula da tabela para editá-la
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="carcacaTable" trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column headerText="#{labels.carcaca_data}:"
+								style="text-align: center" sortBy="#{carcaca.data}"
+								filterBy="#{carcaca.data}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar value="#{carcaca.data}" effect="fold"
+											required="true" validatorMessage="A data deve ser passado"
+											maxdate="#{animalAddEditMB.todayDate}"
+											locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+										</p:calendar>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.carcaca_areaDeOlhoLombo}:"
+								style="text-align: center" sortBy="#{carcaca.areaDeOlhoLombo}"
+								filterBy="#{carcaca.areaDeOlhoLombo}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.areaDeOlhoLombo}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{carcaca.areaDeOlhoLombo}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.carcaca_compDeOlhoLombo}:"
+								style="text-align: center" sortBy="#{carcaca.compDeOlhoLombo}"
+								filterBy="#{carcaca.compDeOlhoLombo}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.compDeOlhoLombo}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{carcaca.compDeOlhoLombo}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.carcaca_espessuraGorduraSub}:"
+								style="text-align: center"
+								sortBy="#{carcaca.espessuraGorduraSub}"
+								filterBy="#{carcaca.espessuraGorduraSub}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.espessuraGorduraSub}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{carcaca.espessuraGorduraSub}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.carcaca_espessuraGorduraEst}:"
+								style="text-align: center"
+								sortBy="#{carcaca.espessuraGorduraEst}"
+								filterBy="#{carcaca.espessuraGorduraEst}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.espessuraGorduraEst}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{carcaca.espessuraGorduraEst}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.carcaca_profDeOlhoLombo}:"
+								style="text-align: center" sortBy="#{carcaca.profDeOlhoLombo}"
+								filterBy="#{carcaca.profDeOlhoLombo}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.profDeOlhoLombo}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{carcaca.profDeOlhoLombo}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.carcaca_marmoDeOlhoLombo}:"
+								style="text-align: center" sortBy="#{carcaca.marmoDeOlhoLombo}"
+								filterBy="#{carcaca.marmoDeOlhoLombo}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{carcaca.marmoDeOlhoLombo}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{carcaca.marmoDeOlhoLombo}">
+											<f:validateDoubleRange minimum="0" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="#{labels.coluna_acao}">
+								<div align="center">
+									<p:commandButton value="#{labels.button_remove}" update="@form"
+										process="@this" icon="fa fa-remove"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:collector value="#{carcaca}"
+											removeFrom="#{animalAddEditMB.animal.carcaca}" unique="true" />
+									</p:commandButton>
+								</div>
+							</p:column>
+						</p:dataTable>
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink>
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="carcacaTable"
+									fileName="Carcaças do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+							<h:commandLink>
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="carcacaTable"
+									fileName="Carcaças do animal #{animalAddEditMB.animal.nomeNumero}"
+									pageOnly="true" />
+							</h:commandLink>
+						</div>
+					</p:outputPanel>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+
+
+	</ui:define>
+</ui:composition>

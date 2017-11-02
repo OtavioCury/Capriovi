@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="main.xhtml"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br />
+		<br />
+
+		<p:ajaxStatus>
+		</p:ajaxStatus>
+
+		<h:form>
+
+			<p:growl id="growl" life="2000" />
+
+			<!-- Esse bloco só será renderizado se a fazenda e a lista forem diferentes de null-->
+			<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+				<c:if
+					test="#{(systemSessionMB.fazenda.pecuarista != null) and (systemSessionMB.listFazendas.size() > 0)}">
+					<h4 style="margin-left: 15%; font-weight: bold">Trocar
+						Fazenda:</h4>
+
+					<h:selectOneMenu value="#{systemSessionMB.fazenda}"
+						id="fazendaSelect" converter="fazendaConverter"
+						style="width:25%;margin-left: 8%"
+						styleClass="btn btn-default dropdown-toggle">
+						<f:ajax render="@all" onevent="PF('statusDialog').show()" />
+						<f:selectItem itemValue="null" itemLabel="Sel. Fazenda" />
+						<f:selectItems value="#{systemSessionMB.listFazendas}"
+							itemLabel="#{fazenda.nome}" var="fazenda" itemValue="#{fazenda}">
+						</f:selectItems>
+					</h:selectOneMenu>
+				</c:if>
+			</sec:ifAnyGranted>
+
+			<!-- Esse bloco só será renderenzado se a fazenda for null e a lista de fazenda não for -->
+			<c:if
+				test="#{(systemSessionMB.fazenda.pecuarista == null) and (systemSessionMB.listFazendas.size() > 0)}">
+				<div align="center">
+					<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+						<p:panel style="width:50%" header="Selecione uma Fazenda">
+							<br />
+							<br />
+							<f:facet name="actions">
+								<p:commandLink
+									styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+									oncomplete="PF('ajuda2').show()">
+									<h:outputText styleClass="ui-icon ui-icon-help" />
+								</p:commandLink>
+							</f:facet>
+
+							<h:outputText value="Nome da Fazenda: " style="font-size: 120%" />
+
+							<h:selectOneMenu value="#{systemSessionMB.fazenda}"
+								converter="fazendaConverter" style="width:25%;margin-left: 8%"
+								styleClass="btn btn-default dropdown-toggle">
+								<f:ajax render="@all" onevent="PF('statusDialog').show()" />
+								<f:selectItem itemValue="null" itemLabel="Sel. Fazenda" />
+								<f:selectItems value="#{systemSessionMB.listFazendas}"
+									itemLabel="#{fazenda.nome}" var="fazenda"
+									itemValue="#{fazenda}">
+								</f:selectItems>
+							</h:selectOneMenu>
+
+							<br />
+							<br />
+						</p:panel>
+					</sec:ifAnyGranted>
+				</div>
+			</c:if>
+
+			<br />
+			<br />
+			<br />
+			<br />
+
+			<!-- Esse bloco só vai renderizar se a fazenda e a lista de fazenda forem diferentes de null -->
+			<sec:ifAnyGranted roles="ROLE_PECUARISTA, ROLE_FUNCIONARIO">
+				<h:panelGrid columns="2"
+					rendered="#{systemSessionMB.fazenda.pecuarista != null}" id="panel">
+
+					<p:column>
+						<p:panel
+							style="min-width:340px; text-align:center; margin-left: 16%"
+							header="Detalhamento da Fazenda"
+							footer="Fazenda: #{systemSessionMB.fazenda.nome}">
+							<h4>Detalhes da fazenda escolhida:</h4>
+							<br />
+							<div align="center">
+								<p:panelGrid columns="2" cellpadding="10" class="ui-noborder">
+
+									<h:outputText value="#{labels.fazenda_name}: "
+										styleClass="DescricaoOutPut" />
+									<h:outputText value=" #{systemSessionMB.fazenda.nome}" />
+
+									<h:outputText value="#{labels.fazenda_estado}: "
+										styleClass="DescricaoOutPut" />
+									<h:outputText value="#{systemSessionMB.fazenda.estado}" />
+
+									<h:outputText value="#{labels.fazenda_municipio}: "
+										styleClass="DescricaoOutPut" />
+									<h:outputText value="#{systemSessionMB.fazenda.municipio}" />
+
+									<h:outputText value="#{labels.fazenda_telefone}: "
+										styleClass="DescricaoOutPut" />
+									<h:outputText value="#{systemSessionMB.fazenda.telefone}" />
+
+									<h:outputText value="CNPJ: " styleClass="DescricaoOutPut"
+										rendered="#{systemSessionMB.fazenda.cnpj != null}" />
+									<h:outputText value="#{systemSessionMB.fazenda.cnpj}"
+										rendered="#{systemSessionMB.fazenda.cnpj != null}" />
+
+									<h:outputText value="#{labels.fazenda_dimensao}: "
+										styleClass="DescricaoOutPut"
+										rendered="#{systemSessionMB.fazenda.dimensao != null}" />
+									<h:outputText value="#{systemSessionMB.fazenda.dimensao}"
+										rendered="#{systemSessionMB.fazenda.dimensao != null}" />
+
+								</p:panelGrid>
+							</div>
+						</p:panel>
+
+					</p:column>
+
+					<p:column>
+
+
+						<p:dataTable id="fazendaDataTable" rowKey="#{fazenda.id}"
+							widgetVar="dataTable" var="fazenda"
+							value="#{systemSessionMB.listFazendas}" paginator="true" rows="5"
+							sortMode="multiple" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+							{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.fazenda_load}"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							style="width:80%;margin-left:17%;margin-bottom: 19%"
+							resizableColumns="true">
+
+							<f:facet name="header">
+								<h6>
+									#{labels.fazenda_cadastrada}
+									<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+										<p:commandButton widgetVar="addButton" style="float:right"
+											value="#{labels.button_add} fazenda"
+											action="/pages/entidades/fazenda/addEdit.xhtml?faces-redirect=true"
+											ajax="false" actionListener="#{fazendaAddEditMB.add()}"
+											icon="fa fa-plus" />
+									</sec:ifAnyGranted>
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{fazenda.nome}" filterBy="#{fazenda.nome}"
+								style="text-align: center">
+								<f:facet name="header">
+									<h:outputText value="Nome" />
+								</f:facet>
+								<h:outputText value="#{fazenda.nome}" />
+							</p:column>
+
+							<p:column exportable="false">
+								<f:facet name="header">
+									<h:outputText value="#{labels.coluna_opcao}" />
+								</f:facet>
+
+								<div align="center">
+
+									<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+										<p:commandButton icon="fa fa-search"
+											action="/pages/entidades/fazenda/fazenda.xhtml"
+											actionListener="#{fazendaAddEditMB.update(fazenda)}"
+											ajax="false" />
+									</sec:ifAnyGranted>
+
+									<sec:ifAnyGranted roles="ROLE_FUNCIONARIO">
+										<p:commandButton icon="fa fa-search"
+											action="/pages/entidades/fazenda/fazenda.xhtml"
+											actionListener="#{fazendaAddEditMB.update(fazenda)}"
+											value="Informações" ajax="false" />
+									</sec:ifAnyGranted>
+
+									<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+
+										<p:commandButton widgetVar="updateButton"
+											value="#{labels.button_update}" update="fazendaDataTable"
+											action="/pages/entidades/fazenda/addEdit.xhtml"
+											actionListener="#{fazendaAddEditMB.update(fazenda)}"
+											icon="fa fa-refresh" ajax="false" />
+
+										<p:commandButton widgetVar="deleteButton"
+											value="#{labels.button_delete}"
+											actionListener="#{systemSessionMB.deletaFazenda(fazenda)}"
+											update="@form j_idt11:labelFazenda" icon="fa fa-trash"
+											style="background: #ff3333; border-color: #ff3333">
+											<p:confirm header="Deseja deletar esta fazenda?"
+												message="Todos os rebanhos e animais ligados a esta fazenda serão deletados também!"
+												icon="ui-icon-alert" />
+										</p:commandButton>
+
+									</sec:ifAnyGranted>
+
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade" responsive="true" closeOnEscape="true">
+										<div align="center">
+											<p:commandButton value="#{labels.button_yes}" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+												style="background: #ff3333; border-color: #ff3333">
+											</p:commandButton>
+											<p:commandButton value="#{labels.button_no}" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</div>
+									</p:confirmDialog>
+
+								</div>
+							</p:column>
+						</p:dataTable>
+
+					</p:column>
+
+				</h:panelGrid>
+
+				<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+					<div align="center">
+						<p:panel header="Adicione uma fazenda no sistema"
+							rendered="#{(systemSessionMB.listFazendas.size() == 0) and (systemSessionMB.fazenda.pecuarista == null)}"
+							style="width:50%" styleClass="panel panel-default">
+							<f:facet name="actions">
+								<p:commandLink
+									styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+									oncomplete="PF('ajuda').show()">
+									<h:outputText styleClass="ui-icon ui-icon-help" />
+								</p:commandLink>
+							</f:facet>
+							<br />
+							<p:commandButton value="Fazenda"
+								action="/pages/entidades/fazenda/addEdit.xhtml?faces-redirect=true"
+								ajax="false" actionListener="#{fazendaAddEditMB.add}"
+								icon="fa fa-plus" />
+							<br />
+							<br />
+						</p:panel>
+					</div>
+				</sec:ifAnyGranted>
+			</sec:ifAnyGranted>
+
+		</h:form>
+
+		<!-- Dialogos de ajuda na página -->
+		<p:dialog widgetVar="ajuda" modal="true" showEffect="fade"
+			resizable="true" width="400" closeOnEscape="true" appendTo="@(body)"
+			header="Ajuda" draggable="true">
+			<p:outputPanel style="text-align:justify">
+				<div align="center">
+					<h4>
+						<p:outputLabel
+							value="Você precisa cadastrar uma fazenda para utlizar o sistema!">
+						</p:outputLabel>
+					</h4>
+				</div>
+			</p:outputPanel>
+		</p:dialog>
+
+		<p:dialog widgetVar="ajuda2" modal="true" showEffect="fade"
+			resizable="true" width="400" closeOnEscape="true" appendTo="@(body)"
+			draggable="true" header="Ajuda" footer="Informações"
+			responsive="true" maximizable="true">
+			<p:outputPanel style="text-align:justify">
+				<div align="center">
+					<h4>Você precisa selecionar uma fazenda para realizar
+						cadastros e gerar relatórios no sistema!</h4>
+				</div>
+			</p:outputPanel>
+		</p:dialog>
+
+		<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+			appendTo="@(body)" style="align:center; text-align:center"
+			closable="false" position="center" minimizable="false"
+			maximizable="false" resizable="false" showHeader="true"
+			header="Carregando os dados da fazenda">
+			<p:graphicImage name="carregand.gif" library="gifs" />
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

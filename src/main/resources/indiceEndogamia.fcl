@@ -1,0 +1,66 @@
+FUNCTION_BLOCK indiceEndogamia	// Definição do bloco
+
+// Define variáveis de entrada
+VAR_INPUT
+	baixoUm: REAL;
+	baixoDois: REAL;		
+	medioUm: REAL;
+	medioDois: REAL;
+	medioTres : REAL;
+	altoUm: REAL;
+	altoDois : REAL;
+	indice : REAL;
+	endogamia : REAL;
+END_VAR
+
+// Define variáveis de saída
+VAR_OUTPUT				
+	nota : REAL; //(* RANGE(0 .. 10) *) 
+END_VAR
+
+// Define as funções de pertinencia para a variável famacha
+FUZZIFY indice		
+	TERM baixo := (baixoUm, 1)(baixoDois, 0);
+	TERM  medio := (medioUm, 0)(medioDois, 1)(medioTres, 0);
+	TERM alto := (altoUm, 0)(altoDois, 1);
+END_FUZZIFY
+
+// Define as funções de pertinencia para a variável escore
+FUZZIFY endogamia	
+	TERM baixo := (0, 1)(0.25, 0);
+	TERM  medio := (0.2, 0)(0.35, 1)(0.6, 0);
+	TERM alto := (0.5, 0)(1, 1);	
+END_FUZZIFY
+
+// Define as funções de pertinencias para a variável de saída nota
+DEFUZZIFY nota			
+	TERM baixa := (0, 1) (3,1) (5,0);
+	TERM media := (3,0) (5,1) (7,0);
+	TERM alta := (5,0) (7,1) (10,1);
+	METHOD : COG;		// Método de centro de gravidade
+	DEFAULT := 0;		// Valor padrão (caso nenhuma regra for ativada)
+END_DEFUZZIFY
+
+// Definição das regras
+RULEBLOCK ConjuntoRegras
+
+
+	AND : MIN;	// Use 'min' for 'and'
+	ACT : MIN;	// Use 'min' activation method
+	ACCU : MAX;	// Use 'max' accumulation method
+	
+	RULE 1: IF indice IS baixo AND endogamia IS baixo THEN nota IS baixa;
+	RULE 2: IF indice IS baixo AND endogamia IS medio THEN nota IS baixa;
+	RULE 3: IF indice IS baixo AND endogamia IS alto THEN nota IS baixa;
+	
+	RULE 4: IF indice IS medio AND endogamia IS baixo THEN nota IS  media;
+	RULE 5: IF indice IS medio AND endogamia IS medio THEN nota IS media;
+	RULE 6: IF indice IS medio AND endogamia IS alto THEN nota IS baixa;
+	
+	RULE 7: IF indice IS alto AND endogamia IS baixo THEN nota IS alta;
+	RULE 8: IF indice IS alto AND endogamia IS medio THEN nota IS alta;
+	RULE 9: IF indice IS alto AND endogamia IS alto THEN nota IS media;
+	
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

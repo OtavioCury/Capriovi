@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb style="height: 30px">
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Exportar Banco"
+				url="/pages/exportacao/exportar.xhtml" />
+			<p:menuitem value="Exportar Detalhamento do animal"
+				url="/pages/exportacao/exportarAnimal.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+			<p:growl id="growl" life="2000" />
+		</h:form>
+
+		<br></br>
+		<br></br>
+
+		<h:form>
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2; text-align: center">
+					<h3 class="panel-title" style="font-weight: bold;">Exportar
+						informações de #{animalAddEditMB.animal.nomeNumero}</h3>
+				</div>
+				<div class="panel-body">
+
+
+					<p:accordionPanel multiple="true">
+						<p:tab title="Desenvolvimento Ponderal">
+
+							<p:dataTable id="desenvolvimentoPonderalDataTable"
+								widgetVar="dataTable" var="desenvolvimentoPonderal"
+								value="#{desenvolvimentoPonderalMB.desenvolvimentoPonderals}"
+								paginator="true" rows="10" lazy="true" sortMode="multiple"
+								paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20"
+								loadingMessage="#{labels.desenvolvimentoPonderal_load}"
+								resizableColumns="true" reflow="true"
+								emptyMessage="Nenhum registro encontrado">
+								<f:facet name="header">
+									<h6>
+										Desenvolvimentos Ponderais do animal
+										${animalAddEditMB.animal.nomeNumero}
+										<p:commandButton id="toggler" type="button" value="Colunas"
+											icon="ui-icon-calculator" style="float:right" />
+										<p:columnToggler datasource="desenvolvimentoPonderalDataTable"
+											trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column headerText="#{labels.desenvolvimentoPonderal_data}"
+									style="text-align: center" sortBy="#{verminose.data}"
+									filterBy="#{verminose.data}">
+									<h:outputText value="#{desenvolvimento.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="#{labels.peso}" style="text-align: center"
+									sortBy="#{desenvolvimento.peso}"
+									filterBy="#{desenvolvimento.peso}">
+									<h:outputText value="#{desenvolvimento.peso}" />
+								</p:column>
+
+								<p:column headerText="#{labels.desenvolvimentoPonderal_escore}"
+									style="text-align: center"
+									sortBy="#{desenvolvimento.escoreCondicaoCorporal}"
+									filterBy="#{desenvolvimento.escoreCondicaoCorporal}">
+									<h:outputText value="#{desenvolvimento.escoreCondicaoCorporal}" />
+								</p:column>
+
+								<p:column headerText="Conformidade" style="text-align: center"
+									sortBy="#{desenvolvimento.conformidade}"
+									filterBy="#{desenvolvimento.conformidade}">
+									<h:outputText value="#{desenvolvimento.conformidade}" />
+								</p:column>
+
+								<p:column headerText="Precocidade" style="text-align: center"
+									sortBy="#{desenvolvimento.precocidade}"
+									filterBy="#{desenvolvimento.precocidade}">
+									<h:outputText value="#{desenvolvimento.precocidade}" />
+								</p:column>
+
+								<p:column headerText="Musculosidade" style="text-align: center"
+									sortBy="#{desenvolvimento.musculosidade}"
+									filterBy="#{desenvolvimento.musculosidade}">
+									<h:outputText value="#{desenvolvimento.musculosidade}" />
+								</p:column>
+
+
+							</p:dataTable>
+							<div align="right">
+								<b>Opções de exportação: </b>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls"
+										target="desenvolvimentoPonderalDataTable"
+										fileName="Desenvolvimentos Ponderais do animal #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv"
+										target="desenvolvimentoPonderalDataTable"
+										fileName="Desenvolvimentos Ponderais do animal #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+							</div>
+						</p:tab>
+
+						<p:tab title="Verminose">
+
+							<p:dataTable id="verminoseTable" widgetVar="dataTable"
+								var="verminose" value="#{animalAddEditMB.animal.verminose}"
+								paginator="true" rows="10" lazy="true" sortMode="multiple"
+								paginatorPosition="bottom" resizableColumns="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20" reflow="true"
+								emptyMessage="Nenhum registro encontrado">
+								<f:facet name="header">
+									<h6>
+										Verminoses do animal ${animalAddEditMB.animal.nomeNumero}
+										<p:commandButton id="toggler" type="button" value="Colunas"
+											icon="ui-icon-calculator" style="float:right" />
+										<p:columnToggler datasource="verminoseTable" trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column headerText="#{labels.verminose_ovosPorGramaDeFazes}"
+									style="text-align: center"
+									sortBy="#{verminose.ovosPorGramaDeFazes}"
+									filterBy="#{verminose.ovosPorGramaDeFazes}">
+									<h:outputText value="#{verminose.ovosPorGramaDeFazes}" />
+								</p:column>
+
+								<p:column headerText="#{labels.verminose_data}"
+									style="text-align: center" sortBy="#{verminose.data}"
+									filterBy="#{verminose.data}">
+									<h:outputText value="#{verminose.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="#{labels.verminose_famacha}"
+									style="text-align: center" sortBy="#{verminose.famacha}"
+									filterBy="#{verminose.famacha}">
+									<h:outputText value="#{verminose.famacha}" />
+								</p:column>
+
+
+							</p:dataTable>
+
+							<div align="right">
+								<b>Opções de exportação: </b>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="verminoseTable"
+										fileName="Verminoses do animal #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+
+								<h:commandLink
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv" target="verminoseTable"
+										fileName="Verminoses do animal #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+							</div>
+						</p:tab>
+
+						<p:tab title="Tamanho Corporal">
+
+							<p:dataTable id="tamanhoCorporalTable" widgetVar="dataTable"
+								var="tamanhoCorporal" resizableColumns="true"
+								value="#{animalAddEditMB.animal.tamanhoCorporal}"
+								paginator="true" rows="10" lazy="true" sortMode="multiple"
+								paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20" reflow="true"
+								emptyMessage="Nenhum registro encontrado" scrollable="true">
+								<f:facet name="header">
+									<h6>
+										Tamanhos Corporais do animal
+										${animalAddEditMB.animal.nomeNumero}
+										<p:commandButton id="toggler" type="button" value="Colunas"
+											icon="ui-icon-calculator" style="float:right" />
+										<p:columnToggler datasource="tamanhoCorporalTable"
+											trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column headerText="#{labels.verminose_data}"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.data}"
+									filterBy="#{tamanhoCorporal.data}">
+									<h:outputText value="#{tamanhoCorporal.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_alturaCernelha}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.alturaCernelha}"
+									filterBy="#{tamanhoCorporal.alturaCernelha}">
+									<h:outputText value="#{tamanhoCorporal.alturaCernelha} " />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_alturaGarupa}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.alturaGarupa}"
+									filterBy="#{tamanhoCorporal.alturaGarupa}">
+									<h:outputText value="#{tamanhoCorporal.alturaGarupa} " />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_comprimentoCorporal}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.comprimentoCorporal}"
+									filterBy="#{tamanhoCorporal.comprimentoCorporal}">
+									<h:outputText value="#{tamanhoCorporal.comprimentoCorporal} " />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_alturaPerna}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.alturaPerna}"
+									filterBy="#{tamanhoCorporal.alturaPerna}">
+									<h:outputText value="#{tamanhoCorporal.alturaPerna} " />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_perimetroCanela}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.perimetroCanela}"
+									filterBy="#{tamanhoCorporal.perimetroCanela}">
+									<h:outputText value="#{tamanhoCorporal.perimetroCanela} " />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_comprimentoPerna}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.comprimentoPerna}"
+									filterBy="#{tamanhoCorporal.comprimentoPerna}">
+									<h:outputText value="#{tamanhoCorporal.comprimentoPerna} " />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_perimetroPerna}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.perimetroPerna}"
+									filterBy="#{tamanhoCorporal.perimetroPerna}">
+									<h:outputText value="#{tamanhoCorporal.perimetroPerna} " />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_circunferenciaToracica}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.circunferenciaToracica}"
+									filterBy="#{tamanhoCorporal.circunferenciaToracica}">
+									<h:outputText value="#{tamanhoCorporal.circunferenciaToracica}" />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_comprimentoOrelha}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.comprimentoOrelha}"
+									filterBy="#{tamanhoCorporal.comprimentoOrelha}">
+
+									<h:outputText value="#{tamanhoCorporal.comprimentoOrelha} " />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_comprimentoCabeca}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.comprimentoCabeca}"
+									filterBy="#{tamanhoCorporal.comprimentoCabeca}">
+									<h:outputText value="#{tamanhoCorporal.comprimentoCabeca} " />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_longitudeRosto}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.longitudeRosto}"
+									filterBy="#{tamanhoCorporal.longitudeRosto}">
+									<h:outputText value="#{tamanhoCorporal.longitudeRosto}" />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_larguraIleos}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.larguraIleos}"
+									filterBy="#{tamanhoCorporal.larguraIleos}">
+									<h:outputText value="#{tamanhoCorporal.larguraIleos}" />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_larguraIsquios}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.larguraIsquios}"
+									filterBy="#{tamanhoCorporal.larguraIsquios}">
+									<h:outputText value="#{tamanhoCorporal.larguraIsquios}" />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_comprimentoGarupa}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.comprimentoGarupa}"
+									filterBy="#{tamanhoCorporal.comprimentoGarupa}">
+									<h:outputText value="#{tamanhoCorporal.comprimentoGarupa}" />
+								</p:column>
+
+								<p:column
+									headerText="#{labels.tamanhoCorporal_comprimentoCauda}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.comprimentoCauda}"
+									filterBy="#{tamanhoCorporal.comprimentoCauda}">
+									<h:outputText value="#{tamanhoCorporal.comprimentoCauda}" />
+								</p:column>
+
+								<p:column headerText="#{labels.tamanhoCorporal_perimetroCauda}:"
+									style="text-align: center" width="150"
+									sortBy="#{tamanhoCorporal.perimetroCauda}"
+									filterBy="#{tamanhoCorporal.perimetroCauda}">
+									<h:outputText value="#{tamanhoCorporal.perimetroCauda}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<div align="right">
+								<b>Opções de exportação: </b>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="tamanhoCorporalTable"
+										fileName="Tamanhos corporais #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv" target="tamanhoCorporalTable"
+										fileName="Tamanhos corporais #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+							</div>
+						</p:tab>
+
+						<p:tab title="Carcaças">
+
+							<p:dataTable id="carcacaTable" widgetVar="dataTable"
+								var="carcaca" value="#{animalAddEditMB.animal.carcaca}"
+								paginator="true" rows="10" lazy="true" sortMode="multiple"
+								paginatorPosition="bottom" resizableColumns="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20" reflow="true"
+								emptyMessage="Nenhum registro encontrado" scrollable="true">
+								<f:facet name="header">
+									<h6>
+										Carcaças do animal ${animalAddEditMB.animal.nomeNumero}
+										<p:commandButton id="toggler" type="button" value="Colunas"
+											icon="ui-icon-calculator" style="float:right" />
+										<p:columnToggler datasource="carcacaTable" trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column headerText="#{labels.carcaca_data}:"
+									style="text-align: center" sortBy="#{carcaca.data}"
+									filterBy="#{carcaca.data}">
+									<h:outputText value="#{carcaca.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="#{labels.carcaca_areaDeOlhoLombo}:"
+									style="text-align: center" sortBy="#{carcaca.areaDeOlhoLombo}"
+									filterBy="#{carcaca.areaDeOlhoLombo}">
+									<h:outputText value="#{carcaca.areaDeOlhoLombo}" />
+								</p:column>
+
+								<p:column headerText="#{labels.carcaca_compDeOlhoLombo}:"
+									style="text-align: center" sortBy="#{carcaca.compDeOlhoLombo}"
+									filterBy="#{carcaca.compDeOlhoLombo}">
+									<h:outputText value="#{carcaca.compDeOlhoLombo}" />
+								</p:column>
+
+								<p:column headerText="#{labels.carcaca_espessuraGorduraSub}:"
+									style="text-align: center"
+									sortBy="#{carcaca.espessuraGorduraSub}"
+									filterBy="#{carcaca.espessuraGorduraSub}">
+									<h:outputText value="#{carcaca.espessuraGorduraSub}" />
+								</p:column>
+
+								<p:column headerText="#{labels.carcaca_espessuraGorduraEst}:"
+									style="text-align: center"
+									sortBy="#{carcaca.espessuraGorduraEst}"
+									filterBy="#{carcaca.espessuraGorduraEst}">
+									<h:outputText value="#{carcaca.espessuraGorduraEst}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<div align="right">
+								<b>Opções de exportação: </b>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="carcacaTable"
+										fileName="Carcaças #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv" target="carcacaTable"
+										fileName="Carcaças #{animalAddEditMB.animal.nomeNumero}"
+										pageOnly="false" />
+								</h:commandLink>
+							</div>
+						</p:tab>
+
+					</p:accordionPanel>
+				</div>
+			</div>
+
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+					<p:commandButton value="#{labels.button_back}"
+						action="/pages/exportacao/exportar.xhtml?faces-redirect=true"
+						actionListener="#{animalAddEditMB.cancel}"
+						style="margin: 130 auto;" ajax="false" icon="fa fa-arrow-left" />
+				</p:outputPanel>
+			</p:row>
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+	<h:head>
+
+	</h:head>
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Relatório de dados zootécnicos animal"
+				url="/pages/relatorios/producao/relDadosZootecAnimal.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+	<ui:define name="content">
+		<br />
+		<h:form id="rebanhoForm">
+			<p:panel id="custom" header="Relatório de dados zootecnicos animal"
+				style="margin-bottom:20px; text-align:center; ">
+				<f:facet name="actions">
+					<p:commandLink
+						styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						oncomplete="PF('descRel').show()">
+						<h:outputText styleClass="ui-icon ui-icon-help" />
+					</p:commandLink>
+				</f:facet>
+
+				<div class="panel-body">
+
+					<p:wizard flowListener="#{relDadosZootecAnimalMB.onFlowProcess}"
+						backLabel="Voltar" nextLabel="Próximo" widgetVar="myWizard">
+
+						<p:tab id="escolheRebanho" title="Rebanho">
+							<p:messages id="msgs" showDetail="false" life="2000"
+								closable="true" />
+							<div class="panel-body">
+								<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+									var="rebanho" value="#{relDadosZootecAnimalMB.rebanhos}"
+									paginator="true" rows="10" sortMode="multiple"
+									paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{relDadosZootecAnimalMB.rebanhosMarcados}"
+									rowKey="#{rebanho.id}" reflow="true">
+									<f:facet name="header">
+										#{labels.rebanhos_cadastrados} ${systemSessionMB.fazenda.nome}
+										</f:facet>
+									<p:column selectionMode="single"
+										style="width:5%;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.nome}" />
+									</p:column>
+
+									<p:column sortBy="#{rebanho.fazenda.nome}"
+										filterBy="#{rebanho.fazenda.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.fazenda}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.fazenda.nome}" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</p:tab>
+
+						<p:tab id="escolheAnimal" title="Animal">
+							<p:messages id="msgs2" showDetail="false" life="2000" />
+							<div class="panel-body">
+								<p:dataTable id="rebanhoDataTableDois" widgetVar="dataTableDois"
+									var="animal" value="#{relDadosZootecAnimalMB.animais}"
+									paginator="true" rows="5" paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{relDadosZootecAnimalMB.animalMarcados}"
+									rowKey="#{animal.id}" reflow="true">
+
+									<p:column selectionMode="single"
+										style="width:5%;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{animal.nomeNumero}" />
+									</p:column>
+
+									<p:column sortBy="#{animal.nascimento}"
+										filterBy="#{animal.nascimento}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.animal_nascimento}" />
+										</f:facet>
+										<h:outputText value="#{animal.nascimento}">
+											<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-03:00" />
+										</h:outputText>
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</p:tab>
+						<p:tab id="relatorio" title="Relatório">
+							<div align="center">
+								<p:panelGrid style="margin-top:20px; width: 100%;">
+									<f:facet name="header">
+										<p:row>
+											<p:column colspan="4">Relatório de dados zootecnicos do Animal:  #{relDadosZootecAnimalMB.animalMarcados.nomeNumero}</p:column>
+										</p:row>
+										<p:row>
+											<p:column colspan="4">Detalhes</p:column>
+										</p:row>
+
+									</f:facet>
+
+									<p:row>
+										<p:column style="font-weight: bold; width: 200px;">
+											<h:outputText value="#{labels.rebanho_fazenda}: "
+												styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.rebanho.fazenda.nome}" />
+										</p:column>
+
+										<p:column style="font-weight: bold; width: 200px;">
+											<h:outputText value="Rebanho: " styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.rebanho.nome}" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column style="font-weight: bold;">
+											<h:outputText value="#{labels.rebanho_name}: "
+												styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value=" #{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.nomeNumero}" />
+										</p:column>
+
+										<p:column style="font-weight: bold;">
+											<h:outputText value="#{labels.rebanho_codigo}: "
+												styleClass="DescricaoOutPut" />
+
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.codigo}" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Sexo:" />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.sexo.descricao}" />
+										</p:column>
+
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Status:" />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.status.descricao}" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Data de Nascimento: " />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.nascimento}">
+												<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-03:00" />
+											</h:outputText>
+										</p:column>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Data de Entrada: " />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText
+												value="#{relDadosZootecAnimalMB.resumoDadosZootecAnimal.animal.dataEntrada}">
+												<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-03:00" />
+											</h:outputText>
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="4" styleClass="ui-widget-header">
+											<p:spacer height="0" />
+										</p:column>
+									</p:row>
+									<c:if test="#{relDadosZootecAnimalMB.curvaPesos != null}">
+										<p:row>
+											<p:column colspan="4" align="center">
+												<p:chart type="line"
+													model="#{relDadosZootecAnimalMB.curvaPesos}"
+													style=" height:250px" widgetVar="chart" responsive="true" />
+												<p:commandButton type="button" value="Reset"
+													icon="ui-icon-cancel" onclick="PF('chart').resetZoom()" />
+											</p:column>
+										</p:row>
+									</c:if>
+
+									<p:row>
+										<p:column colspan="4">
+											<div align="center">
+												<h5>Genealogia Animal</h5>
+												<p:tree value="#{relDadosZootecAnimalMB.gerAnt}" var="node"
+													dynamic="true" orientation="horizontal" animate="true">
+													<p:treeNode>
+														<h:outputText value="#{node}" />
+													</p:treeNode>
+
+												</p:tree>
+											</div>
+										</p:column>
+									</p:row>
+
+									<p:row>
+
+										<p:column colspan="4">
+											<div align="center">
+												<h5>Descendentes</h5>
+												<p:tree value="#{relDadosZootecAnimalMB.gerPost}" var="node"
+													dynamic="true" orientation="horizontal" animate="true">
+													<p:treeNode>
+														<h:outputText value="#{node}" />
+													</p:treeNode>
+
+												</p:tree>
+											</div>
+										</p:column>
+									</p:row>
+
+
+								</p:panelGrid>
+							</div>
+						</p:tab>
+					</p:wizard>
+
+					<p:dialog header="#{labels.relatorio_descricao}"
+						widgetVar="descRel" modal="true" showEffect="fade"
+						resizable="true" width="700" closeOnEscape="true"
+						appendTo="@(body)">
+						<p:outputPanel id="multiCarDetail" style="text-align:justify;">
+							<p:outputLabel>
+								O usuário terá que escolher na entrada do relatório o rebanho o qual deseja obter o relatório e 
+								posteriormente o nome do animal que deseja obter as informações. A saída desse relatório será 
+								em formato de listagem e plotagem de gráficos. Na listagem terá informações como: Fazenda e 
+								rebanho ao qual o animal pertence, Nome/número, sexo e data de nascimento do animal, 
+								status e data de entrada do animal, além do nome/número da mãe e do pai do animal. 
+								Será plotado informações como: Curva de crescimento e a genealogia (ascendentes e descendentes) 
+								do animal.  
+				            </p:outputLabel>
+						</p:outputPanel>
+					</p:dialog>
+
+				</div>
+			</p:panel>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

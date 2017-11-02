@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.min.css" />
+
+	<link href="resources/site/css/site.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="resources/site/css/font-awesome.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		rel="stylesheet" type="text/css" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		rel="stylesheet" type="text/css" />
+	<title>Alterar Senha - Capriovi</title>
+</h:head>
+<body id="page-top" class="index">
+	<f:view>
+		<f:event listener="#{usuarioAddEditMB.testaTokenSenha(param.token)}"
+			type="preRenderView"></f:event>
+	</f:view>
+	<nav id="mainNav"
+		class="navbar navbar-default navbar-fixed-top navbar-custom">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="inicial.xhtml">Capriovi</a>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="login-panel panel panel-default">
+						<div class="panel-heading"
+							style="background: #e6e6e6; color: #000000; border-color: #e6e6e6"
+							align="center">
+							<h3 class="panel-title">Alterar senha</h3>
+						</div>
+						<div class="panel-body">
+							<h:form>
+								<p:messages id="msgs" />
+
+								<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+									<p:outputLabel value="Nova senha: " for="password" />
+									<p:password id="password" match="confirmPassword"
+										label="Password 1" required="true" feedback="true"
+										value="#{usuarioAddEditMB.usuario.password}"
+										promptLabel="Digite sua senha" weakLabel="Fraca"
+										strongLabel="Forte" goodLabel="Média">
+										<f:validateLength minimum="6" />
+									</p:password>
+									<p:message for="password" />
+
+
+									<p:outputLabel value="Corfirmar senha: " for="confirmPassword" />
+									<p:password id="confirmPassword" label="Password 2"
+										required="true" value="#{usuarioAddEditMB.usuario.password}">
+										<f:validateLength minimum="6" />
+									</p:password>
+									<p:message for="confirmPassword" />
+								</p:panelGrid>
+
+								<br></br>
+								<br></br>
+
+								<p:separator />
+								<div align="center">
+									<p:commandButton value="Atualizar senha" ajax="false"
+										validateClient="true" style="text-align:center"
+										icon="fa fa-refresh"
+										actionListener="#{usuarioAddEditMB.atualizaSenha()}"
+										action="login.xhtml?faces-redirect=true" />
+								</div>
+							</h:form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

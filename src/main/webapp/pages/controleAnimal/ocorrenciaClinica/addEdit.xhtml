@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Ocorrências"
+				url="/pages/controleAnimal/ocorrenciaClinica/list.xhtml" />
+			<p:menuitem value="#{labels.cadastro_ocorrencia}"
+				url="/pages/controleAnimal/ocorrenciaClinica/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br></br>
+		<br></br>
+
+		<h:form id="form">
+
+			<p:growl id="msg" life="3000" showDetail="true" />
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2"
+					align="center">
+					<h3 class="panel-title" style="font-weight: bold;">#{labels.cadastro_ocorrencia}</h3>
+				</div>
+				<div class="panel-body">
+
+
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="#{labels.animal}:" for="AnimalPojo" />
+							<p:autoComplete id="AnimalPojo"
+								completeMethod="#{ocorrenciaClinicaAddEditMB.completeAnimal}"
+								var="animal" itemLabel="#{animal}" itemValue="#{animal}"
+								value="#{ocorrenciaClinicaAddEditMB.ocorrenciaClinica.animal.nomeNumero}"
+								forceSelection="true" required="true"
+								placeholder="Nome/Número do Animal" dropdown="true">
+								<p:ajax listener="#{ocorrenciaClinicaAddEditMB.onChangeAnimal}"
+									update="msg" event="itemSelect" />
+							</p:autoComplete>
+
+
+							<p:outputLabel value="#{labels.doenca}:" for="DoencaPojo" />
+							<p:autoComplete id="DoencaPojo"
+								completeMethod="#{ocorrenciaClinicaAddEditMB.completeDoenca}"
+								var="doenca" itemLabel="#{doenca}" itemValue="#{doenca}"
+								value="#{ocorrenciaClinicaAddEditMB.ocorrenciaClinica.doenca.nome}"
+								forceSelection="true" required="true" dropdown="true"
+								placeholder="Nome da Doença">
+								<p:ajax listener="#{ocorrenciaClinicaAddEditMB.onChangeDoenca}"
+									update="msg" event="itemSelect" />
+							</p:autoComplete>
+
+
+							<p:outputLabel value="#{labels.ocorrenciaClinica_data}: "
+								for="data" />
+							<p:calendar id="data"
+								value="#{ocorrenciaClinicaAddEditMB.ocorrenciaClinica.data}"
+								effect="fold" validatorMessage="A data deve ser passado"
+								required="true"
+								maxdate="#{ocorrenciaClinicaAddEditMB.todayDate}"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy"
+								navigator="true">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msg" />
+							</p:calendar>
+						</p:panelGrid>
+					</div>
+
+					<div align="center">
+						<p:outputLabel for="observacao"
+							value="#{labels.ocorrenciaClinica_observacao}:"
+							style="margin-top:20px" />
+						<p:editor id="observacao" widgetVar="editorWidget"
+							value="#{ocorrenciaClinicaAddEditMB.ocorrenciaClinica.observacao}"
+							width="500" />
+						<p:message for="observacao" />
+					</div>
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+
+					<p:commandButton value="#{labels.button_cancel}"
+						action="/pages/controleAnimal/ocorrenciaClinica/list.xhtml?faces-redirect=true"
+						actionListener="#{ocorrenciaClinicaAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+					<p:commandButton value="#{labels.button_save}"
+						action="/pages/controleAnimal/ocorrenciaClinica/list.xhtml?faces-redirect=true"
+						actionListener="#{ocorrenciaClinicaAddEditMB.save}"
+						style="margin: 130 auto;margin-left:2%" ajax="false"
+						icon="ui-icon-disk" />
+
+				</p:outputPanel>
+			</p:row>
+			<br />
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

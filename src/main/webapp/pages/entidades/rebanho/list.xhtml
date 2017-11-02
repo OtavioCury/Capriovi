@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de rebanhos"
+				url="/pages/entidades/rebanho/list.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<br />
+
+		<div align="center">
+			<div class="panel panel-default" style="width: 95%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title" style="font-weight: bold;">#{labels.rebanhos}</h3>
+				</div>
+				<div class="panel-body">
+
+
+					<h:form id="rebanhoForm">
+						<sec:ifAnyGranted roles="ROLE_PECUARISTA, ROLE_FUNCIONARIO">
+							<div align="right">
+								<p:commandButton widgetVar="addButton"
+									value="#{labels.button_add} um rebanho"
+									action="/pages/entidades/rebanho/addEdit.xhtml?faces-redirect=true"
+									ajax="false" actionListener="#{rebanhoAddEditMB.add()}"
+									icon="fa fa-plus"
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}" />
+							</div>
+							<br />
+						</sec:ifAnyGranted>
+						<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+							var="rebanho" value="#{rebanhoMB.rebanhosUsuario}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.rebanho_load}" rowKey="#{rebanho.id}"
+							reflow="true" emptyMessage="Nenhum registro foi encontrado"
+							draggableColumns="true">
+							<f:facet name="header">
+
+								<h6>
+									#{labels.rebanho_cadastrada}
+									<p:commandButton id="togglers" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="rebanhoDataTable"
+										trigger="togglers" />
+								</h6>
+							</f:facet>
+
+
+							<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}"
+								style="text-align: center">
+								<f:facet name="header">
+									<h:outputText value="#{labels.rebanho_name}" />
+								</f:facet>
+								<h:outputText value="#{rebanho.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{rebanho.criacao.descricao}"
+								filterBy="#{rebanho.criacao.descricao}"
+								style="text-align: center">
+								<f:facet name="header">
+									<h:outputText value="Tipo de criação" />
+								</f:facet>
+								<h:outputText value="#{rebanho.criacao.descricao}" />
+							</p:column>
+
+							<p:column exportable="false">
+								<f:facet name="header">
+									<h:outputText value="#{labels.coluna_opcao}" />
+								</f:facet>
+								<div align="center">
+
+									<p:commandButton icon="fa fa-search"
+										action="/pages/entidades/rebanho/rebanho.xhtml?faces-redirect=true"
+										actionListener="#{rebanhoAddEditMB.update(rebanho)}"
+										ajax="false" />
+
+									<p:commandButton widgetVar="updateButton"
+										value="#{labels.button_update}" update="rebanhoDataTable"
+										action="/pages/entidades/rebanho/addEdit.xhtml?faces-redirect=true"
+										actionListener="#{rebanhoAddEditMB.update(rebanho)}"
+										icon="fa fa-refresh" ajax="false" />
+
+									<p:commandButton widgetVar="deleteButton"
+										value="#{labels.button_delete}"
+										actionListener="#{rebanhoMB.deletaRebanho(rebanho)}"
+										update="rebanhoDataTable" icon="fa fa-trash"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:confirm header="Deseja deletar este rebanho?"
+											message="Todos os animais ligados a este rebanho serão deletados também!"
+											icon="ui-icon-alert" />
+
+									</p:commandButton>
+
+
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade" closeOnEscape="true">
+										<div align="center">
+											<p:commandButton value="Sim" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+												style="background: #ff3333; border-color: #ff3333" />
+											<p:commandButton value="Não" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</div>
+									</p:confirmDialog>
+
+								</div>
+							</p:column>
+						</p:dataTable>
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="rebanhoDataTable"
+									fileName="Rebanhos da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="rebanhoDataTable"
+									fileName="Rebanhos da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="rebanhoDataTable"
+									fileName="Rebanhos da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</h:form>
+				</div>
+				<div class="panel-footer" align="left">Rebanhos Cadastrados</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

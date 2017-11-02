@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Raças"
+				url="/pages/cadastro/raca/list.xhtml" />
+			<p:menuitem value="#{labels.cadastro_raca}"
+				url="/pages/cadastro/raca/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br></br>
+		<br></br>
+
+		<h:form enctype="multipart/form-data">
+			<h:inputHidden value="#{racaAddEditMB.raca.id}" />
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2"
+					align="center">
+					<h3 class="panel-title" style="font-weight: bold;">#{racaAddEditMB.title}</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="ui-fluid" align="center">
+						<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+							<p:outputLabel value="#{labels.raca_nome}: " for="nome" />
+							<p:inputText id="nome" value="#{racaAddEditMB.raca.nome}"
+								required="true" style="width:140%" />
+						</p:panelGrid>
+					</div>
+
+					<br />
+
+					<div align="center">
+						<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+
+							<p:column>
+								<p:outputLabel value="Origem: " for="origem"
+									style="margin-top:20px" />
+								<p:editor id="origem" widgetVar="editorWidget"
+									value="#{racaAddEditMB.raca.origem}" width="430" />
+							</p:column>
+							<p:column>
+								<p:outputLabel value="Aspecto Geral: " for="aspecto"
+									style="margin-top:20px" />
+								<p:editor id="aspecto" widgetVar="editorWidget"
+									value="#{racaAddEditMB.raca.aspectoGeral}" width="430"
+									required="true" />
+							</p:column>
+
+						</p:panelGrid>
+					</div>
+
+					<br />
+
+					<p:panel header="Adicionar uma imagem" closable="true">
+						<p:fileUpload value="#{racaAddEditMB.file}" mode="simple"
+							skinSimple="true" label="Escolher Arquivo" />
+					</p:panel>
+
+					<br />
+
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+					<p:commandButton value="#{labels.button_cancel}"
+						action="/pages/cadastro/raca/list.xhtml?faces-redirect=true"
+						actionListener="#{racaAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+					<p:commandButton value="#{labels.button_save}"
+						action="/pages/cadastro/raca/list.xhtml?faces-redirect=true"
+						actionListener="#{racaAddEditMB.save()}"
+						style="margin: 130 auto;margin-left:2%" ajax="false"
+						icon="ui-icon-disk" />
+
+				</p:outputPanel>
+			</p:row>
+
+			<br />
+
+		</h:form>
+	</ui:define>
+</ui:composition>

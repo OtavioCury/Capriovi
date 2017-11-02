@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de funcionários"
+				url="/pages/entidades/funcionario/list.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br></br>
+		<br></br>
+
+		<div align="center">
+			<div class="panel panel-default" style="width: 95%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title" style="font-weight: bold;">#{labels.funcionario}</h3>
+				</div>
+				<div class="panel-body">
+
+
+					<h:form id="funcionarioForm">
+
+						<div align="right">
+							<p:commandButton widgetVar="addButton"
+								value="#{labels.button_add} um funcionário"
+								action="/pages/entidades/funcionario/addEdit.xhtml?faces-redirect=true"
+								ajax="false" actionListener="#{funcionarioAddEditMB.add}"
+								icon="fa fa-plus"
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}" />
+						</div>
+						<br />
+
+						<p:dataTable id="funcionarioDataTable" widgetVar="dataTable"
+							var="funcionario" value="#{funcionarioMB.funcionarios}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.funcionario_load}"
+							resizableColumns="true" selectionMode="single"
+							rowKey="#{funcionario.id}" reflow="true"
+							emptyMessage="Nenhum registro foi encontrado"
+							draggableColumns="true">
+							<f:facet name="header">
+								<h6>
+									#{labels.funcionario_cadastrada}
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="funcionarioDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{funcionario.nome}"
+								filterBy="#{funcionario.nome}">
+								<f:facet name="header">
+									<h:outputText value="#{labels.funcionario_name}" />
+								</f:facet>
+								<h:outputText value="#{funcionario.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.fazenda.nome}"
+								filterBy="#{funcionario.fazenda.nome}">
+								<f:facet name="header">
+									<h:outputText value="Fazenda associada" />
+								</f:facet>
+								<h:outputText value="#{funcionario.fazenda.nome}" />
+							</p:column>
+
+							<p:column exportable="false">
+								<f:facet name="header">
+									<h:outputText value="#{labels.coluna_opcao}" />
+								</f:facet>
+								<div align="center">
+									<p:commandButton icon="fa fa-search" ajax="false"
+										action="/pages/entidades/funcionario/funcionario.xhtml?faces-redirect=true"
+										actionListener="#{funcionarioAddEditMB.update(funcionario)}" />
+
+									<p:commandButton widgetVar="updateButton" ajax="false"
+										value="#{labels.button_update}" update="funcionarioDataTable"
+										action="/pages/entidades/funcionario/addEdit.xhtml?faces-redirect=true"
+										actionListener="#{funcionarioAddEditMB.update(funcionario)}"
+										icon="fa fa-refresh" />
+
+									<p:commandButton widgetVar="deleteButton"
+										value="#{labels.button_delete}"
+										actionListener="#{funcionarioMB.deletaFuncionario(funcionario)}"
+										update="funcionarioDataTable" icon="fa fa-trash"
+										style="background: #ff3333; border-color: #ff3333">
+										<p:confirm header="Deseja delatar este funcionário?"
+											message="Deletando esse funcionário, ele não poderá acessar o sistema!"
+											icon="ui-icon-alert" />
+
+									</p:commandButton>
+
+
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade">
+										<div align="center">
+											<p:commandButton value="#{labels.button_yes}" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+												style="background: #ff3333; border-color: #ff3333" />
+											<p:commandButton value="#{labels.button_no}" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</div>
+									</p:confirmDialog>
+								</div>
+							</p:column>
+						</p:dataTable>
+
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/pdf.jpg" width="24" />
+								<p:dataExporter type="pdf" target="funcionarioDataTable"
+									fileName="Funcionários da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="funcionarioDataTable"
+									fileName="Funcionários da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="funcionarioDataTable"
+									fileName="Funcionários da fazenda #{systemSessionMB.fazenda.nome}"
+									pageOnly="false" />
+							</h:commandLink>
+
+						</div>
+					</h:form>
+				</div>
+				<div class="panel-footer" align="left">Funcionários
+					Cadastrados</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

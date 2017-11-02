@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Vacinações"
+				url="/pages/controleAnimal/vacinacao/list.xhtml" />
+			<p:menuitem value="Cadastro Vacinação"
+				url="/pages/controleAnimal/vacinacao/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br />
+		<br />
+
+		<h:form id="form">
+
+			<p:growl id="msg" life="3000" showDetail="true" />
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2"
+					align="center">
+					<h3 class="panel-title" style="font-weight: bold;">#{vacinacaoAddEditMB.title}</h3>
+				</div>
+				<div class="panel-body" align="center">
+
+					<br />
+
+					<p:dataTable id="animalDataTable" widgetVar="dataTable"
+						var="animal" value="#{animalMB.animaisFazenda()}" paginator="true"
+						rows="10" sortMode="multiple" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,20"
+						loadingMessage="#{labels.animal_load}" rowKey="#{animal.id}"
+						emptyMessage="Nenhum registro foi encontrado" reflow="true"
+						style="width:90%"
+						selection="#{vacinacaoAddEditMB.vacinacao.animais}">
+
+						<f:facet name="header" reflow="true" draggableColumns="true">
+							<h6>
+								Selecione os animais vacinados
+								<p:commandButton id="togglers" type="button"
+									value="#{labels.coluna}" icon="ui-icon-calculator"
+									style="float:right" />
+								<p:columnToggler datasource="animalDataTable" trigger="togglers" />
+							</h6>
+
+						</f:facet>
+
+						<p:column selectionMode="multiple" style="text-align:center"
+							width="40" />
+
+						<p:column sortBy="#{animal.nomeNumero}"
+							filterBy="#{animal.nomeNumero}">
+							<f:facet name="header">
+								<h:outputText value="#{labels.animal_nomeNumero}" />
+							</f:facet>
+							<h:outputText value="#{animal.nomeNumero}" />
+						</p:column>
+
+						<p:column sortBy="#{animal.rebanho.nome}"
+							filterBy="#{animal.rebanho.nome}">
+							<f:facet name="header">
+								<h:outputText value="#{labels.rebanho}" />
+							</f:facet>
+							<h:outputText value="#{animal.rebanho.nome}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<br /> <br />
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="Data:" for="data" />
+							<p:calendar id="data"
+								value="#{vacinacaoAddEditMB.vacinacao.data}" effect="fold"
+								maxdate="#{vacinacaoAddEditMB.todayDate}"
+								locale="#{labels.calendario}" required="true"
+								pattern="dd-MM-yyyy" navigator="true">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msg" />
+							</p:calendar>
+
+							<p:outputLabel value="Medicamento:" for="medicamentoPojo" />
+							<p:autoComplete id="medicamentoPojo"
+								completeMethod="#{vacinacaoAddEditMB.completeMedicamento}"
+								var="medicamento" itemLabel="#{medicamento}"
+								itemValue="#{medicamento}"
+								value="#{vacinacaoAddEditMB.vacinacao.medicamento.nome}"
+								forceSelection="true" required="true"
+								placeholder="Nome do Medicamento" dropdown="true">
+								<p:ajax listener="#{vacinacaoAddEditMB.onChangeMedicamento}"
+									update="msg" event="itemSelect" />
+							</p:autoComplete>
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:outputLabel for="observacao"
+						value="Observações sobre a vacinação:" style="margin-top:20px" />
+					<p:editor id="observacao" widgetVar="editorWidget"
+						value="#{vacinacaoAddEditMB.vacinacao.observacao}" width="500" />
+					<p:message for="observacao" />
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+
+					<p:commandButton value="#{labels.button_cancel}"
+						action="/pages/controleAnimal/vacinacao/list.xhtml?faces-redirect=true"
+						actionListener="#{vacinacaoAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+					<p:commandButton value="#{labels.button_save}"
+						action="#{vacinacaoAddEditMB.save}"
+						style="margin: 130 auto;margin-left:2%" ajax="false"
+						icon="ui-icon-disk" />
+				</p:outputPanel>
+			</p:row>
+			<br />
+		</h:form>
+	</ui:define>
+
+</ui:composition>

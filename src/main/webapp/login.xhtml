@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.css" />
+	<link href="resources/site/css/site.min.css" rel="stylesheet"
+		type="text/css" />
+
+	<link href="resources/site/css/font-awesome.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		rel="stylesheet" type="text/css" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		rel="stylesheet" type="text/css" />
+	<title>Cadastro - Capriovi</title>
+</h:head>
+<body id="page-top" class="index">
+	<f:view>
+		<f:event listener="#{pecuaristaAddEditMB.add()}" type="preRenderView"></f:event>
+	</f:view>
+	<nav id="mainNav"
+		class="navbar navbar-default navbar-fixed-top navbar-custom">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="inicial.xhtml">Capriovi</a>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="login-panel panel panel-default">
+						<div class="panel-heading" style="background: #cccccc">
+							<h3 class="panel-title">Login</h3>
+						</div>
+						<div class="panel-body">
+							<form name="login"
+								action="#{request.contextPath}/j_spring_security_check"
+								method="post">
+								<p:messages id="msgs" sticky="true" showDetail="true" />
+								<fieldset>
+									<div class="form-group">
+										<p:inputText styleClass="form-control" id="j_username"
+											required="true" placeholder="Username" />
+									</div>
+									<div class="form-group">
+										<p:password styleClass="form-control" id="j_password"
+											required="true" placeholder="Password" />
+									</div>
+									<div class="checkbox">
+										<label> <input name="remember" type="checkbox"
+											value="Remember Me" />Lembre-me
+										</label>
+										<p:spacer width="50" />
+										<a href="recuperaSenha.xhtml?faces-redirect=true">Esqueceu
+											sua senha?</a>
+									</div>
+
+									<c:if test="${param.erro == '1'}">
+										<h:outputText value="login invalido"
+											style="color: red; font-size: small;" />
+										<br />
+										<br />
+									</c:if>
+
+									<input name="submit" type="submit" value="Entrar"
+										class="btn btn-lg btn btn-primary btn-block" />
+									<div class="form-group">
+										<div class="col-md-12 control">
+											<div align="center"
+												style="border-top: 1px solid #888; padding-top: 15px; font-size: 85%">
+												<h5>Não possui uma conta?</h5>
+												<a href="cadastro.xhtml"
+													onClick="$('#loginbox').hide(); $('#signupbox').show()">
+													<h5>Cadastre-se aqui</h5>
+												</a>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+								<br />
+							</form>
+							<br />
+						</div>
+					</div>
+					<h:form>
+						<div align="center">
+							<p:commandButton value="Voltar à página inicial"
+								action="inicial.xhtml?faces-redirect=true"
+								icon="fa fa-mail-reply" ajax="false"
+								style="background: #ff3333; border-color: #ff3333" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

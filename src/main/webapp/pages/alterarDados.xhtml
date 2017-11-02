@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" global="false" />
+			<p:menuitem value="#{labels.menu_altera}"
+				url="/pages/alterarDados.xhtml" global="false" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<f:view>
+			<f:event listener="#{usuarioAddEditMB.procuraUsuario()}"
+				type="preRenderView" />
+		</f:view>
+		<br />
+		<br />
+		<h:form>
+
+			<p:growl id="msg" life="5000" />
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title">Clique nos campos para editar suas
+						informações</h3>
+				</div>
+				<div class="panel-body">
+
+					<br></br>
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<h:outputLabel for="name" value="#{labels.user_name}:"
+								style="font-weight:bold" />
+							<p:inplace>
+								<p:inputText id="name" label="Nome"
+									value="#{usuarioAddEditMB.usuario.nome}"
+									validatorMessage="O Campo Nome deve ser preenchido com caracteres válidos">
+									<f:validateLength minimum="3" maximum="30" />
+								</p:inputText>
+							</p:inplace>
+
+
+							<h:outputLabel for="endereço" value="#{labels.user_endereco}:"
+								style="font-weight:bold" />
+							<p:inplace>
+								<p:inputText id="endereço" label="Endereço"
+									value="#{usuarioAddEditMB.usuario.endereco}">
+									<f:validateLength minimum="5" maximum="40" />
+								</p:inputText>
+							</p:inplace>
+
+
+							<h:outputLabel for="estado" value="#{labels.user_estado}:"
+								style="font-weight:bold" />
+							<p:inplace>
+								<p:selectOneMenu id="estado"
+									value="#{usuarioAddEditMB.usuario.estado}">
+									<f:selectItem itemLabel="Selecionar Estado" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{usuarioAddEditMB.estados}" />
+								</p:selectOneMenu>
+							</p:inplace>
+
+
+							<h:outputLabel for="municipio" value="#{labels.user_municipio}:"
+								style="font-weight:bold" />
+							<p:inplace>
+								<p:inputText id="municipio" label="Municipio"
+									value="#{usuarioAddEditMB.usuario.municipio}">
+									<f:validateLength minimum="3" maximum="15" />
+								</p:inputText>
+							</p:inplace>
+
+
+							<h:outputLabel for="cpf" value="Cpf:" style="font-weight:bold" />
+							<p:inplace>
+								<p:inputMask id="cpf" value="#{usuarioAddEditMB.usuario.cpf}"
+									mask="999.999.999.99" />
+							</p:inplace>
+
+
+							<p:outputLabel value="Telefone (Fixo): " for="telefone" />
+							<p:inplace>
+								<p:inputMask id="telefone"
+									value="#{usuarioAddEditMB.usuario.telefone}"
+									mask="(99) 9999-9999" />
+							</p:inplace>
+
+							<p:outputLabel value="Celular: " for="celular" />
+							<p:inplace>
+								<p:inputMask id="celular"
+									value="#{usuarioAddEditMB.usuario.celular}"
+									mask="(99) 9 9999-9999" required="true" />
+							</p:inplace>
+						</p:panelGrid>
+					</div>
+					<br />
+
+					<div align="center">
+
+						<p:commandButton value="Atualizar informações"
+							icon="fa fa-refresh" validateClient="true"
+							style="margin-right:10px"
+							actionListener="#{usuarioAddEditMB.save()}" update="msg" />
+					</div>
+
+				</div>
+				<div class="panel-footer" align="left">Informações da sua
+					conta</div>
+			</div>
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title">Desativar sua conta</h3>
+				</div>
+				<div class="panel-body">
+
+					<br></br>
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:commandButton value="Desativar conta"
+								icon="fa fa-fw fa-remove"
+								actionListener="#{usuarioAddEditMB.removeUsuario()}"
+								action="/login.xhtml?faces-redirect=true"
+								style="background: #ff3333; border-color: #ff3333">
+
+								<p:confirm header="Tem certeza que deseja desativar sua conta?"
+									message="Todos os seus registros serão deletados do sistema!"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade">
+								<div align="center">
+									<p:commandButton value="#{labels.button_yes}" type="button"
+										styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+										style="background: #ff3333; border-color: #ff3333" />
+									<p:commandButton value="#{labels.button_no}" type="button"
+										styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+								</div>
+							</p:confirmDialog>
+
+						</p:panelGrid>
+					</div>
+					<br />
+				</div>
+			</div>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

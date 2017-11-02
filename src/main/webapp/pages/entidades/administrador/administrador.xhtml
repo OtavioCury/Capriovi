@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Administradores"
+				url="/pages/entidades/administrador/list.xhtml" />
+			<p:menuitem value="informações do Administrador"
+				url="/pages/entidades/administrador/administrador.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<br />
+		<h:form>
+
+			<div class="panel panel-default" style="width: 90%; margin-left: 5%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title">Informações sobre o administrador</h3>
+				</div>
+				<div align="center">
+					<div class="panel-body">
+						<div class="ui-fluid">
+
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+								<p:outputLabel for="nome" value="Nome :" />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.nome}"
+									escape="false" id="nome" />
+
+								<p:outputLabel for="endereco" value="Endereço: " />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.endereco}"
+									escape="false" id="endereco" />
+
+								<p:outputLabel for="estado" value="Estado: " />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.estado}"
+									escape="false" id="estado" />
+
+								<p:outputLabel for="municipio" value="Município: " />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.municipio}"
+									escape="false" id="municipio" />
+
+								<p:outputLabel for="cpf" value="Cpf: " />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.cpf}"
+									escape="false" id="cpf" />
+
+								<p:outputLabel for="telefone" value="Telefone: " />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.telefone}"
+									escape="false" id="telefone" />
+
+								<p:outputLabel for="email" value="Email: " />
+								<h:outputText
+									value="#{administradorAddEditMB.administrador.email}"
+									escape="false" id="email" />
+							</p:panelGrid>
+
+							<br />
+						</div>
+					</div>
+				</div>
+			</div>
+			<br />
+			<br />
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+					<p:commandButton value="#{labels.button_back}"
+						action="/pages/entidades/administrador/list.xhtml?faces-redirect=true"
+						actionListener="#{administradorAddEditMB.cancel}"
+						style="margin: 130 auto;" ajax="false" immediate="true"
+						icon="fa fa-arrow-left" />
+				</p:outputPanel>
+			</p:row>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

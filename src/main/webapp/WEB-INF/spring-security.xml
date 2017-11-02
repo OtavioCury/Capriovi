@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                            http://www.springframework.org/schema/security
+                            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<http auto-config="true">
+
+		<!--Os tres podem acessar -->
+		<intercept-url pattern="/pages/main.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/home.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/menu.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/header.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/footer.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/alterarDados.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/settings/language.xhtml"
+			access="ROLE_ADMIN,ROLE_FUNCIONARIO,ROLE_PECUARISTA" />
+		<!-- Doença -->
+		<intercept-url pattern="/pages/cadastro/doenca/list.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<intercept-url pattern="/pages/cadastro/doenca/doenca.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<intercept-url pattern="/pages/cadastro/doenca/addEdit.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<!-- Medicamento -->
+		<intercept-url pattern="/pages/cadastro/medicamento/list.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<intercept-url pattern="/pages/cadastro/medicamento/medicamento.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<intercept-url pattern="/pages/cadastro/medicamento/addEdit.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<!-- Raça -->
+		<intercept-url pattern="/pages/cadastro/raca/list.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<intercept-url pattern="/pages/cadastro/raca/raca.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />
+		<intercept-url pattern="/pages/cadastro/raca/addEdit.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO,ROLE_ADMIN" />		
+		<!---->
+
+		<!--Admin -->
+		<intercept-url pattern="/pages/entidades/administrador/**"
+			access="ROLE_ADMIN" />
+		<intercept-url pattern="/pages/entidades/usuario/**"
+			access="ROLE_ADMIN" />		
+		<!---->
+
+		<!--Funcionario e Pecuarista -->
+		<intercept-url pattern="/pages/entidades/fazenda/**"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO" />
+		<intercept-url pattern="/pages/entidades/rebanho/**"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO" />
+		<intercept-url pattern="/pages/entidades/funcionario/**"
+			access="ROLE_PECUARISTA" />
+		<intercept-url pattern="/pages/entidades/animal/**"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO" />
+
+		<!-- Só o pecuarista -->
+		<intercept-url pattern="/pages/controleAnimal/**"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO" />
+		<intercept-url pattern="/pages/relatorios/**"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO" />
+		<intercept-url pattern="/pages/teste.xhtml"
+			access="ROLE_PECUARISTA,ROLE_FUNCIONARIO" />
+		<!-- -->
+
+		<form-login login-page="/login.xhtml"
+			always-use-default-target="true" default-target-url="/pages/home.xhtml"
+			authentication-failure-url="/login.xhtml?erro=1" />
+		<logout logout-success-url="/login.xhtml" />
+		<remember-me key="uniqueAndSecret" />
+
+	</http>
+
+	<authentication-manager>
+		<authentication-provider>
+			<password-encoder hash="sha-256" />
+			<jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="SELECT username, password, statusGeral FROM usuario WHERE username=?"
+				authorities-by-username-query="SELECT u.username,p.permissao FROM usuario u, usuario_permissao p WHERE u.id = p.usuario AND u.username=?" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<!-- <beans:property name="url" -->
+		<!-- value="jdbc:mysql://59c3bcec7628e19a320000e5-gleisonandrade.rhcloud.com:50911/capriovi" 
+			/> -->
+		<!-- <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" 
+			/> -->
+		<!-- <beans:property name="username" value="adminQuiwYjr" /> -->
+		<!-- <beans:property name="password" value="ii-JnJWkdXm7" /> -->
+
+		<beans:property name="url"
+			value="jdbc:mysql://localhost:3306/capriovi" />
+		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<beans:property name="username" value="root" />
+		<beans:property name="password" value="root" />
+	</beans:bean>
+
+</beans:beans>

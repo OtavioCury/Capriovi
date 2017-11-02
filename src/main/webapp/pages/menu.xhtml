@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+
+
+<body>
+
+	<ui:composition>
+		<div id="mainMenu">
+			<h:form>
+				<p:panelMenu>
+
+					<p:submenu label="#{labels.cadastro}" icon="fa fa-save"
+						expanded="true">
+
+						<sec:ifAnyGranted roles="ROLE_ADMIN">
+							<p:menuitem value="Todos Usuários"
+								url="/pages/entidades/usuario/list.xhtml" />
+							<p:menuitem value="Administradores"
+								url="/pages/entidades/administrador/list.xhtml" />
+						</sec:ifAnyGranted>
+
+						<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+
+							<p:menuitem value="Funcionários"
+								url="/pages/entidades/funcionario/list.xhtml" />
+						</sec:ifAnyGranted>
+						<sec:ifAnyGranted roles="ROLE_PECUARISTA, ROLE_FUNCIONARIO">
+							<p:menuitem value="Rebanhos"
+								url="/pages/entidades/rebanho/list.xhtml" />
+						</sec:ifAnyGranted>
+						<sec:ifAnyGranted roles="ROLE_PECUARISTA,ROLE_FUNCIONARIO">
+							<p:menuitem value="Animais"
+								url="/pages/entidades/animal/list.xhtml" />
+						</sec:ifAnyGranted>
+
+						<p:menuitem value="Raças" url="/pages/cadastro/raca/list.xhtml" />
+						<p:menuitem value="Doenças"
+							url="/pages/cadastro/doenca/list.xhtml" />
+
+						<sec:ifAnyGranted roles="ROLE_PECUARISTA,ROLE_FUNCIONARIO">
+							<p:menuitem value="Medicamentos"
+								url="/pages/cadastro/medicamento/list.xhtml" />
+						</sec:ifAnyGranted>
+
+					</p:submenu>
+
+					<sec:ifAnyGranted roles="ROLE_PECUARISTA,ROLE_FUNCIONARIO">
+						<p:submenu label="#{labels.controle_animal}" icon="fa 	fa-paw">
+							<p:menuitem value="#{labels.manejoReprodutivo}"
+								url="/pages/controleAnimal/manejoReprodutivo/list.xhtml" />
+							<p:menuitem value="#{labels.movimentacaoAnimal}"
+								url="/pages/controleAnimal/movimentacaoAnimal/list.xhtml" />
+							<p:menuitem value="#{labels.ocorrenciaClinica}"
+								url="/pages/controleAnimal/ocorrenciaClinica/list.xhtml" />
+							<p:menuitem value="#{labels.controleParazita}"
+								url="/pages/controleAnimal/controleParazita/list.xhtml" />
+							<p:menuitem value="#{labels.vacinacao}"
+								url="/pages/controleAnimal/vacinacao/list.xhtml" />
+						</p:submenu>
+					</sec:ifAnyGranted>
+
+					<sec:ifAnyGranted roles="ROLE_PECUARISTA,ROLE_FUNCIONARIO">
+						<p:submenu label="#{labels.relatorio_producao}"
+							icon="fa fa-file-text-o">
+
+							<p:menuitem value="#{labels.relatorio_zootecnicos_rebanho}"
+								url="/pages/relatorios/producao/relDadosZootecRebanho.xhtml" />
+							<p:menuitem value="Relatório Zootécnico do Animal"
+								url="/pages/relatorios/producao/relDadosZootecAnimal.xhtml" />
+							<p:menuitem value="#{labels.animal_entrada}"
+								url="/pages/relatorios/producao/relAnimaisPorEntrada.xhtml" />
+							<p:menuitem value="#{labels.movimentacaoAnimal}"
+								url="/pages/relatorios/producao/relMovimentacaoAnimal.xhtml" />
+							<p:menuitem value="#{labels.relatorio_crias}"
+								url="/pages/relatorios/producao/relNumeroDeCrias.xhtml" />
+							<p:menuitem value="CPM"
+								url="/pages/relatorios/producao/relCpm.xhtml" />
+							<p:menuitem value="#{labels.relatorio_gordura}"
+								url="/pages/relatorios/producao/relEspessuraDeGordura.xhtml" />
+							<p:menuitem value="#{labels.relatorio_olho}"
+								url="/pages/relatorios/producao/relOlhoLombo.xhtml" />
+							<p:menuitem value="#{labels.relatorio_ocorrencia}"
+								url="/pages/relatorios/producao/relOcorrenciasClinicas.xhtml" />
+							<p:menuitem value="#{labels.controleParazita}"
+								url="/pages/relatorios/producao/relControleParasitario.xhtml" />
+							<p:menuitem value="Vermifugação"
+								url="/pages/relatorios/producao/relVermifugacao.xhtml" />
+
+						</p:submenu>
+
+						<p:submenu label="#{labels.relatorio_reproducao}"
+							icon="fa fa-file-text-o">
+
+							<p:menuitem value="#{labels.relatorio_partos}"
+								url="/pages/relatorios/reproducao/relDePartos.xhtml" />
+							<p:menuitem value="Relatório de Previsão de partos"
+								url="/pages/relatorios/reproducao/relPrevPartos.xhtml" />
+							<p:menuitem value="#{labels.relatorio_femea}"
+								url="/pages/relatorios/reproducao/relFemeasIdadeReprodutiva.xhtml" />
+							<p:menuitem value="#{labels.relatorio_perimetro}"
+								url="/pages/relatorios/reproducao/relPerimetroEscrotal.xhtml" />
+							<p:menuitem value="#{labels.relatorio_reprodutor}"
+								url="/pages/relatorios/reproducao/relCoberturaReprodutor.xhtml" />
+
+
+						</p:submenu>
+						<p:submenu label="#{labels.relatorio_genetico}"
+							icon="fa fa-file-text-o">
+
+							<p:menuitem value="#{labels.relatorio_intervalo}"
+								url="/pages/relatorios/genetico/relIntervaloGeracoes.xhtml" />
+							<p:menuitem value="#{labels.relatorio_ganho}"
+								url="/pages/relatorios/genetico/relGanhoEsperado.xhtml" />
+							<p:menuitem value="#{labels.relatorio_endogamia}"
+								url="/pages/relatorios/genetico/relEndogamia.xhtml" />
+							<p:menuitem value="Tamanho Efetivo da População"
+								url="/pages/relatorios/genetico/relTamPopulacao.xhtml" />
+
+						</p:submenu>
+
+						<p:submenu label="#{labels.menu_acasalamento}"
+							icon="fa fa-venus-mars">
+							<p:menuitem value="Seleção Individual ou Massal"
+								url="/pages/relatorios/acasalamento/relNsgaII.xhtml" />
+							<p:menuitem value="Índices de Ganhos Desejados"
+								url="/pages/relatorios/acasalamento/relIndices.xhtml" />
+							<p:menuitem value="Avaliação genética"
+								url="/pages/relatorios/acasalamento/relAvaliacao.xhtml" />
+						</p:submenu>
+
+					</sec:ifAnyGranted>
+
+					<sec:ifAnyGranted roles="ROLE_PECUARISTA">
+
+						<p:submenu label="Banco de dados" icon="fa fa-database">
+							<p:menuitem value="Exportar Banco"
+								url="/pages/exportacao/exportar.xhtml" />
+						</p:submenu>
+					</sec:ifAnyGranted>
+				</p:panelMenu>
+			</h:form>
+
+
+		</div>
+
+	</ui:composition>
+
+</body>
+</html>

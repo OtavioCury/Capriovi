@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="content">
+		<f:view>
+			<h:inputHidden value="#{movimentacaoAnimalAddEditMBMB.movimentacaoAnimal}" />
+		</f:view>
+		<h:form>
+
+			<p:panel id="basic">
+				<f:facet name="header">
+					<h:outputText value="#{movimentacaoAnimalAddEditMB.movimentacaoAnimal.animal.nomeNumero}" />
+				</f:facet>
+				
+				<p:accordionPanel multiple="true">
+					<p:tab title="Detalhamento da movimentacaoAnimal">
+						<p:panelGrid columns="2" cellpadding="10"  class="ui-noborder">
+							
+							<h:outputText value="Data da Movimentação: " style="text-align:right" />
+							<h:outputText value=" #{movimentacaoAnimalAddEditMB.movimentacaoAnimal.data}" />
+
+							<h:outputText value="Peso: " />
+							<h:outputText value="#{movimentacaoAnimalAddEditMB.movimentacaoAnimal.peso}" />
+
+							<h:outputText value="Motivo Saida: " />
+							<h:outputText value="#{movimentacaoAnimalAddEditMB.movimentacaoAnimal.motivoSaida.descricao}" />
+							
+							
+						</p:panelGrid>
+					</p:tab>
+				</p:accordionPanel>
+
+				<f:facet name="footer">
+					<p:row>
+						<p:outputPanel style="width: 100%; text-align:center"
+							layout="block">
+							<p:commandButton value="#{labels.button_back}"
+								action="/pages/cadastro/movimentacaoAnimal/list.xhtml"
+								style="margin: 130 auto;" ajax="false" immediate="true" />
+						</p:outputPanel>
+					</p:row>
+				</f:facet>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

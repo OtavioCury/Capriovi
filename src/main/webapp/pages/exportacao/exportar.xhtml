@@ -1,0 +1,1262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Exportar Banco"
+				url="/pages/exportacao/exportar.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br />
+		<br />
+		<h:form id="animalForm">
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todas as
+							Fazendas</h3>
+					</div>
+					<div class="panel-body">
+
+						<p:dataTable id="fazendaDataTable" rowKey="#{fazenda.id}"
+							widgetVar="dataTable" var="fazenda"
+							value="#{systemSessionMB.listFazendas}" paginator="true" rows="5"
+							sortMode="multiple" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+							{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.fazenda_load}"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							resizableColumns="true">
+
+							<f:facet name="header">
+								<h6>
+									Todas as fazendas cadastradas
+									<p:commandButton id="togglers" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="fazendaDataTable"
+										trigger="togglers" />
+
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{fazenda.nome}" filterBy="#{fazenda.nome}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Nome" />
+								</f:facet>
+								<h:outputText value="#{fazenda.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{fazenda.estado}" filterBy="#{fazenda.estado}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Estado" />
+								</f:facet>
+								<h:outputText value="#{fazenda.estado}" />
+							</p:column>
+
+							<p:column sortBy="#{fazenda.cnpj}" filterBy="#{fazenda.cnpj}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="CNPJ" />
+								</f:facet>
+								<h:outputText value="#{fazenda.cnpj}" />
+							</p:column>
+
+							<p:column sortBy="#{fazenda.dimensao}"
+								filterBy="#{fazenda.dimensao}" style="text-align: center">
+								<f:facet name="header" width="150">
+									<h:outputText value="Dimensão" />
+								</f:facet>
+								<h:outputText value="#{fazenda.dimensao}" />
+							</p:column>
+
+							<p:column sortBy="#{fazenda.municipio}"
+								filterBy="#{fazenda.municipio}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Município" />
+								</f:facet>
+								<h:outputText value="#{fazenda.municipio}" />
+							</p:column>
+
+							<p:column sortBy="#{fazenda.registro}"
+								filterBy="#{fazenda.registro}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Registro" />
+								</f:facet>
+								<h:outputText value="#{fazenda.registro}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+						</p:dataTable>
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="fazendaDataTable"
+									fileName="Todos as fazendas" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="fazendaDataTable"
+									fileName="Todos as fazendas" pageOnly="false" />
+							</h:commandLink>
+						</div>
+
+					</div>
+					<div class="panel-footer" align="left">Fazendas Cadastrados</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todos os
+							Funcionários</h3>
+					</div>
+					<div class="panel-body">
+
+						<br />
+
+						<p:dataTable id="funcionarioDataTable" widgetVar="dataTable"
+							var="funcionario" value="#{funcionarioMB.funcionariosFazendas()}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.funcionario_load}"
+							resizableColumns="true" selectionMode="single"
+							rowKey="#{funcionario.id}" reflow="true"
+							emptyMessage="Nenhum registro foi encontrado"
+							draggableColumns="true">
+							<f:facet name="header">
+								<h6>
+									Todos os funcionários cadastrados
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="funcionarioDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{funcionario.nome}"
+								filterBy="#{funcionario.nome}">
+								<f:facet name="header">
+									<h:outputText value="#{labels.funcionario_name}" />
+								</f:facet>
+								<h:outputText value="#{funcionario.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.email}"
+								filterBy="#{funcionario.email}">
+								<f:facet name="header">
+									<h:outputText value="E-Mail" />
+								</f:facet>
+								<h:outputText value="#{funcionario.email}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.fazenda.nome}"
+								filterBy="#{funcionario.fazenda.nome}">
+								<f:facet name="header">
+									<h:outputText value="Fazenda associada" />
+								</f:facet>
+								<h:outputText value="#{funcionario.fazenda.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.endereco}"
+								filterBy="#{funcionario.endereco}">
+								<f:facet name="header">
+									<h:outputText value="Endereço" />
+								</f:facet>
+								<h:outputText value="#{funcionario.endereco}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.municipio}"
+								filterBy="#{funcionario.municipio}">
+								<f:facet name="header">
+									<h:outputText value="Município" />
+								</f:facet>
+								<h:outputText value="#{funcionario.municipio}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.estado}"
+								filterBy="#{funcionario.estado}">
+								<f:facet name="header">
+									<h:outputText value="Estado" />
+								</f:facet>
+								<h:outputText value="#{funcionario.estado}" />
+							</p:column>
+
+							<p:column sortBy="#{funcionario.telefone}"
+								filterBy="#{funcionario.telefone}">
+								<f:facet name="header">
+									<h:outputText value="Telefone" />
+								</f:facet>
+								<h:outputText value="#{funcionario.telefone}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="funcionarioDataTable"
+									fileName="Todos os funcionários" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="funcionarioDataTable"
+									fileName="Todos os funcionários" pageOnly="false" />
+							</h:commandLink>
+
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Funcionários
+						Cadastrados</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todos os
+							rebanhos</h3>
+					</div>
+					<div class="panel-body">
+						<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+							var="rebanho" value="#{rebanhoMB.rebanhosFazendas()}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.rebanho_load}" rowKey="#{rebanho.id}"
+							reflow="true" emptyMessage="Nenhum registro foi encontrado"
+							draggableColumns="true">
+							<f:facet name="header">
+
+								<h6>
+									Todos os rebanhos cadastrados
+									<p:commandButton id="togglers" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="rebanhoDataTable"
+										trigger="togglers" />
+								</h6>
+							</f:facet>
+
+
+							<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.rebanho_name}" />
+								</f:facet>
+								<h:outputText value="#{rebanho.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{rebanho.codigo}" filterBy="#{rebanho.codigo}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.rebanho_codigo}" />
+								</f:facet>
+								<h:outputText value="#{rebanho.codigo}" />
+							</p:column>
+
+							<p:column sortBy="#{rebanho.fazenda.nome}"
+								filterBy="#{rebanho.fazenda.nome}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.fazenda}" />
+								</f:facet>
+								<h:outputText value="#{rebanho.fazenda.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{rebanho.criacao.descricao}"
+								filterBy="#{rebanho.criacao.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Criação" />
+								</f:facet>
+								<h:outputText value="#{rebanho.criacao.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{rebanho.finalidade.descricao}"
+								filterBy="#{rebanho.finalidade.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Finalidade" />
+								</f:facet>
+								<h:outputText value="#{rebanho.finalidade.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{rebanho.registro}"
+								filterBy="#{rebanho.registro}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Registro" />
+								</f:facet>
+								<h:outputText value="#{rebanho.registro}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{rebanho.tipoManejo}"
+								filterBy="#{rebanho.tipoManejo}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Tipo Manejo" />
+								</f:facet>
+								<h:outputText value="#{rebanho.tipoManejo}" />
+							</p:column>
+
+
+						</p:dataTable>
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="rebanhoDataTable"
+									fileName="Todos os rebanhos" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="rebanhoDataTable"
+									fileName="Todos os rebanhos" pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Rebanhos Cadastrados</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todos os
+							Animais</h3>
+					</div>
+					<div class="panel-body">
+
+						<p:dataTable id="animalDataTable" widgetVar="dataTable"
+							var="animal" value="#{animalMB.animaisFazendas()}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.animal_load}" rowKey="#{animal.id}"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							draggableColumns="true">
+							<f:facet name="header">
+								<h6>
+									Todos animais cadastrados
+									<p:commandButton id="togglers" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="animalDataTable"
+										trigger="togglers" />
+								</h6>
+
+							</f:facet>
+							<p:column sortBy="#{animal.nomeNumero}"
+								filterBy="#{animal.nomeNumero}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.animal_nomeNumero}" />
+								</f:facet>
+								<h:outputText value="#{animal.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.rebanho.nome}"
+								filterBy="#{animal.rebanho.nome}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.rebanho}" />
+								</f:facet>
+								<h:outputText value="#{animal.rebanho.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.pai.nomeNumero}"
+								filterBy="#{animal.pai.nomeNumero}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Nome do pai" />
+								</f:facet>
+								<h:outputText value="#{animal.pai.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.mae.nomeNumero}"
+								filterBy="#{animal.mae.nomeNumero}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Nome da mãe" />
+								</f:facet>
+								<h:outputText value="#{animal.mae.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.raca.nome}"
+								filterBy="#{animal.raca.nome}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Raça" />
+								</f:facet>
+								<h:outputText value="#{animal.raca.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.grupo}" filterBy="#{animal.grupo}">
+								<f:facet name="header" style="text-align: center" width="150">
+									<h:outputText value="Grupo" />
+								</f:facet>
+								<h:outputText value="#{animal.grupo}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.nascimento}"
+								filterBy="#{animal.nascimento}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Nascimento" />
+								</f:facet>
+								<h:outputText value="#{animal.nascimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{animal.dataEntrada}"
+								filterBy="#{animal.dataEntrada}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Data de entrada" />
+								</f:facet>
+								<h:outputText value="#{animal.dataEntrada}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{animal.sexo.descricao}"
+								filterBy="#{animal.sexo.descricao}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Sexo" />
+								</f:facet>
+								<h:outputText value="#{animal.sexo.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.finalidadeAnimal.descricao}"
+								filterBy="#{animal.finalidadeAnimal.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Finalidade" />
+								</f:facet>
+								<h:outputText value="#{animal.finalidadeAnimal.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.composicaoGenetica.descricao}"
+								filterBy="#{animal.composicaoGenetica.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Composição genética" />
+								</f:facet>
+								<h:outputText value="#{animal.composicaoGenetica.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.parto.descricao}"
+								filterBy="#{animal.parto.descricao}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Tipo de parto" />
+								</f:facet>
+								<h:outputText value="#{animal.parto.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.particao.descricao}"
+								filterBy="#{animal.particao.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Tipo de partição" />
+								</f:facet>
+								<h:outputText value="#{animal.particao.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.orelha.descricao}"
+								filterBy="#{animal.orelha.descricao}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Orelha" />
+								</f:facet>
+								<h:outputText value="#{animal.orelha.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.motivoEntrada.descricao}"
+								filterBy="#{animal.motivoEntrada.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Motivo de entrada" />
+								</f:facet>
+								<h:outputText value="#{animal.motivoEntrada.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{animal.categoria.descricao}"
+								filterBy="#{animal.categoria.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Categoria" />
+								</f:facet>
+								<h:outputText value="#{animal.categoria.descricao}" />
+							</p:column>
+
+							<p:column exportable="false" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.coluna_opcao}" />
+
+								</f:facet>
+								<div align="center">
+									<p:commandButton
+										action="/pages/exportacao/exportarAnimal.xhtml?faces-redirect=true"
+										icon="fa fa-search"
+										actionListener="#{animalAddEditMB.update(animal)}"
+										ajax="false" value="Informações" />
+								</div>
+							</p:column>
+
+						</p:dataTable>
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="animalDataTable"
+									fileName="Todos os Animais" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="animalDataTable"
+									fileName="Todos os Animais" pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Animais Cadastrados</div>
+				</div>
+			</div>
+
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todos os
+							Manejos Reprodutivo</h3>
+					</div>
+					<div class="panel-body">
+
+						<br />
+
+						<p:dataTable id="manejoReprodutivoDataTable"
+							rowKey="#{manejoReprodutivo.id}" widgetVar="dataTable"
+							var="manejoReprodutivo"
+							value="#{manejoReprodutivoMB.manejosFazendas()}" paginator="true"
+							rows="10" sortMode="multiple" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+					{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.manejoReprodutivo_load}"
+							resizableColumns="true"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							draggableColumns="true">
+
+							<f:facet name="header">
+								<h6>
+									Todos os Manejos Reprodutivo cadastrados
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="manejoReprodutivoDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{manejoReprodutivo.rebanho.nome}"
+								filterBy="#{manejoReprodutivo.rebanho.nome}"
+								filterMatchMode="contains" style="text-align: center"
+								width="130">
+								<f:facet name="header">
+									<h:outputText value="#{labels.manejoReprodutivo_rebanho}" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.rebanho.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.matriz.nomeNumero}"
+								filterBy="#{manejoReprodutivo.matriz.nomeNumero}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.manejoReprodutivo_matriz}" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.matriz.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.reprodutor.nomeNumero}"
+								filterBy="#{manejoReprodutivo.reprodutor.nomeNumero}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.manejoReprodutivo_reprodutor}" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.reprodutor.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.dataDaCobertura}"
+								filterBy="#{manejoReprodutivo.dataDaCobertura}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Data da cobertura" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.dataDaCobertura}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.dataCioPosParto}"
+								filterBy="#{manejoReprodutivo.dataCioPosParto}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Data cio pós parto" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.dataCioPosParto}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.dataParto}"
+								filterBy="#{manejoReprodutivo.dataParto}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Data parto" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.dataParto}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.desmame}"
+								filterBy="#{manejoReprodutivo.desmame}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Desmame" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.desmame}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.previsaoParto}"
+								filterBy="#{manejoReprodutivo.previsaoParto}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Previsão Parto" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.previsaoParto}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.pesoMatriz}"
+								filterBy="#{manejoReprodutivo.pesoMatriz}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Peso matriz" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.pesoMatriz}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.paricao.descricao}"
+								filterBy="#{manejoReprodutivo.paricao.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Parição" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.paricao.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.parto.descricao}"
+								filterBy="#{manejoReprodutivo.parto.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Parto" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.parto.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.criasMacho}"
+								filterBy="#{manejoReprodutivo.criasMacho}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Crias macho" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.criasMacho}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.criasFemea}"
+								filterBy="#{manejoReprodutivo.criasFemea}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Crias fêmeas" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.criasFemea}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.gestacao}"
+								filterBy="#{manejoReprodutivo.gestacao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Gestação" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.gestacao}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.amamentacao}"
+								filterBy="#{manejoReprodutivo.amamentacao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Amamentação" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.amamentacao}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.scoreCorporalmatriz}"
+								filterBy="#{manejoReprodutivo.scoreCorporalmatriz}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Escore corporal matriz" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.scoreCorporalmatriz}" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.observacao}"
+								filterBy="#{manejoReprodutivo.observacao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Observação" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.observacao}"
+									escape="false" />
+							</p:column>
+
+							<p:column sortBy="#{manejoReprodutivo.pesoTotal}"
+								filterBy="#{manejoReprodutivo.pesoTotal}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Peso Total" />
+								</f:facet>
+								<h:outputText value="#{manejoReprodutivo.pesoTotal}" />
+							</p:column>
+
+							<p:column
+								sortBy="#{manejoReprodutivo.perimetroEscrotalReprodutor}"
+								filterBy="#{manejoReprodutivo.perimetroEscrotalReprodutor}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Perímetro escotral reprodutor" />
+								</f:facet>
+								<h:outputText
+									value="#{manejoReprodutivo.perimetroEscrotalReprodutor}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="manejoReprodutivoDataTable"
+									fileName="Todos os manejos reprodutivos" pageOnly="false" />
+							</h:commandLink>
+
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="manejoReprodutivoDataTable"
+									fileName="Todos os manejos reprodutivos" pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Manejos Reprodutivos</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todos os
+							controles parasitários cadastrados</h3>
+					</div>
+					<div class="panel-body">
+						<br />
+
+						<p:dataTable id="controleParazitaDataTable"
+							rowKey="#{controleParazita.id}" widgetVar="dataTable"
+							var="controleParazita"
+							value="#{controleParasitaMB.controlesFazendas()}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+					{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.controleParazita_load}"
+							resizableColumns="true"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							draggableColumns="true">
+
+							<f:facet name="header">
+								<h6>
+									Todos os Controles Parasitários cadastrados
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="controleParazitaDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{controleParazita.animal.nomeNumero}"
+								filterBy="#{controleParazita.animal.nomeNumero}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.animal}" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.animal.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.rebanho.nome}"
+								filterBy="#{controleParazita.rebanho.nome}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.rebanho}" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.rebanho.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.medicamento.nome}"
+								filterBy="#{controleParazita.medicamento.nome}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.principioAtivo}" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.medicamento.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.famacha}"
+								filterBy="#{controleParazita.famacha}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Famacha" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.famacha}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.dataVernifugacao}"
+								filterBy="#{controleParazita.dataVernifugacao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Data vermifugação" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.dataVernifugacao}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.nivelPre}"
+								filterBy="#{controleParazita.nivelPre}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Nível Pré" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.nivelPre}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.nivelPos}"
+								filterBy="#{controleParazita.nivelPos}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Nível Pós" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.nivelPos}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.escoreCorporal}"
+								filterBy="#{controleParazita.escoreCorporal}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Escore Corporal" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.escoreCorporal}" />
+							</p:column>
+
+							<p:column sortBy="#{controleParazita.observacao}"
+								filterBy="#{controleParazita.observacao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Observação" />
+								</f:facet>
+								<h:outputText value="#{controleParazita.observacao}"
+									escape="false" />
+							</p:column>
+
+						</p:dataTable>
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="controleParazitaDataTable"
+									fileName="Todos os #{labels.controleParazita}" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="controleParazitaDataTable"
+									fileName="Todos os #{labels.controleParazita}" pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Controles Parasitários</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todas as
+							movimentações animais</h3>
+					</div>
+					<div class="panel-body">
+
+						<br />
+
+						<p:dataTable id="movimentacaoAnimalDataTable"
+							rowKey="#{movimentacaoAnimal.id}" widgetVar="dataTable"
+							var="movimentacaoAnimal"
+							value="#{movimentacaoAnimalMB.movimentacoesFazendas()}"
+							paginator="true" rows="10" sortMode="multiple"
+							paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+					{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.movimentacaoAnimal_load}"
+							resizableColumns="true"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							draggableColumns="true">
+
+							<f:facet name="header">
+								<h6>
+									Todas as movimetações cadastradas
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="movimentacaoAnimalDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{movimentacaoAnimal.data}"
+								filterBy="#{movimentacaoAnimal.data}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.movimentacaoAnimal_data}" />
+								</f:facet>
+								<h:outputText value="#{movimentacaoAnimal.data}" />
+							</p:column>
+
+							<p:column sortBy="#{movimentacaoAnimal.peso}"
+								filterBy="#{movimentacaoAnimal.peso}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.movimentacaoAnimal_peso}" />
+								</f:facet>
+								<h:outputText value="#{movimentacaoAnimal.peso}" />
+							</p:column>
+
+							<p:column sortBy="#{movimentacaoAnimal.animal.nomeNumero}"
+								filterBy="#{movimentacaoAnimal.animal.nomeNumero}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.animal}" />
+								</f:facet>
+								<h:outputText value="#{movimentacaoAnimal.animal.nomeNumero}" />
+							</p:column>
+
+							<p:column sortBy="#{movimentacaoAnimal.motivoSaida.descricao}"
+								filterBy="#{movimentacaoAnimal.motivoSaida.descricao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.movimentacaoAnimal_motivoSaida}" />
+								</f:facet>
+								<h:outputText
+									value="#{movimentacaoAnimal.motivoSaida.descricao}" />
+							</p:column>
+
+							<p:column sortBy="#{movimentacaoAnimal.observacao}"
+								filterBy="#{movimentacaoAnimal.observacao}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Observação" />
+								</f:facet>
+								<h:outputText value="#{movimentacaoAnimal.observacao}"
+									escape="false" />
+							</p:column>
+
+							<p:column sortBy="#{movimentacaoAnimal.tipoSaida}"
+								filterBy="#{movimentacaoAnimal.tipoSaida}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Tipo saída" />
+								</f:facet>
+								<h:outputText value="#{movimentacaoAnimal.tipoSaida}" />
+							</p:column>
+
+							<p:column sortBy="#{movimentacaoAnimal.rebanho.nome}"
+								filterBy="#{movimentacaoAnimal.rebanho.nome}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Nome rebanho" />
+								</f:facet>
+								<h:outputText value="#{movimentacaoAnimal.rebanho.nome}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<div align="right">
+							<b>#{labels.button_export}: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="movimentacaoAnimalDataTable"
+									fileName="Todas #{labels.movimentacaoAnimal}" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="movimentacaoAnimalDataTable"
+									fileName="Todas #{labels.movimentacaoAnimal}" pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Movimentações Animais</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todas as
+							Ocorrências Clínicas</h3>
+					</div>
+					<div class="panel-body">
+						<h:form>
+
+							<br />
+							<p:dataTable id="ocorrenciaClinicaDataTable"
+								widgetVar="dataTable" var="ocorrenciaClinica"
+								value="#{ocorrenciaClinicaMB.ocorrenciasFazendas()}"
+								paginator="true" rows="10" sortMode="multiple"
+								paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20"
+								loadingMessage="#{labels.ocorrenciaClinica_load}"
+								resizableColumns="true" reflow="true" draggableColumns="true"
+								emptyMessage="Nenhum registro foi encontrado">
+								<f:facet name="header">
+									<h6>
+										Todas as ocorrências cadastradas
+										<p:commandButton id="toggler" type="button"
+											value="#{labels.coluna}" icon="ui-icon-calculator"
+											style="float:right" />
+										<p:columnToggler datasource="ocorrenciaClinicaDataTable"
+											trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column sortBy="#{ocorrenciaClinica.data}"
+									filterBy="#{ocorrenciaClinica.data}" style="text-align: center"
+									width="150">
+									<f:facet name="header">
+										<h:outputText value="#{labels.ocorrenciaClinica_data}: " />
+									</f:facet>
+									<h:outputText value="#{ocorrenciaClinica.data}" />
+								</p:column>
+
+								<p:column sortBy="#{ocorrenciaClinica.animal.nomeNumero}"
+									filterBy="#{ocorrenciaClinica.animal.nomeNumero}"
+									style="text-align: center" width="150">
+									<f:facet name="header">
+										<h:outputText value="#{labels.animal}: " escape="false" />
+									</f:facet>
+									<h:outputText value="#{ocorrenciaClinica.animal.nomeNumero}" />
+								</p:column>
+
+								<p:column sortBy="#{ocorrenciaClinica.rebanho.nome}"
+									filterBy="#{ocorrenciaClinica.rebanho.nome}"
+									style="text-align: center" width="150">
+									<f:facet name="header">
+										<h:outputText value="#{labels.rebanho}: " />
+									</f:facet>
+									<h:outputText value="#{ocorrenciaClinica.rebanho.nome}" />
+								</p:column>
+
+								<p:column sortBy="#{ocorrenciaClinica.doenca.nome}"
+									filterBy="#{ocorrenciaClinica.doenca.nome}"
+									style="text-align: center" width="150">
+									<f:facet name="header">
+										<h:outputText value="#{labels.doenca}: " />
+									</f:facet>
+									<h:outputText value="#{ocorrenciaClinica.doenca.nome}" />
+								</p:column>
+
+								<p:column sortBy="#{ocorrenciaClinica.observacao}"
+									filterBy="#{ocorrenciaClinica.observacao}"
+									style="text-align: center" width="150">
+									<f:facet name="header">
+										<h:outputText value="Observação: " />
+									</f:facet>
+									<h:outputText value="#{ocorrenciaClinica.observacao}"
+										escape="false" />
+								</p:column>
+
+							</p:dataTable>
+							<div align="right">
+								<b>#{labels.button_export}: </b>
+								<h:commandLink
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="ocorrenciaClinicaDataTable"
+										fileName="Todas as ocorrências clínicas" pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink
+									rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv" target="ocorrenciaClinicaDataTable"
+										fileName="Todas as ocorrências clínicas" pageOnly="false" />
+								</h:commandLink>
+							</div>
+
+						</h:form>
+					</div>
+					<div class="panel-footer" align="left">Ocorrências Clínicas</div>
+				</div>
+			</div>
+
+			<div align="center">
+				<div class="panel panel-default" style="width: 95%">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title" style="font-weight: bold;">Todas as
+							Vacinações</h3>
+					</div>
+					<div class="panel-body">
+
+						<br />
+
+						<p:dataTable id="vacinacaoDataTable" rowKey="#{vacinacao.id}"
+							widgetVar="dataTable" var="vacinacao"
+							value="#{vacinacaoMB.vacinacao}" paginator="true" rows="10"
+							sortMode="multiple" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+					{PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,20"
+							loadingMessage="#{labels.vacinacao_load}" resizableColumns="true"
+							emptyMessage="Nenhum registro foi encontrado" reflow="true"
+							draggableColumns="true" scrollable="true">
+
+							<f:facet name="header">
+								<h6>
+									Todas as vacinações cadastradas
+									<p:commandButton id="toggler" type="button"
+										value="#{labels.coluna}" icon="ui-icon-calculator"
+										style="float:right" />
+									<p:columnToggler datasource="vacinacaoDataTable"
+										trigger="toggler" />
+								</h6>
+							</f:facet>
+
+							<p:column sortBy="#{vacinacao.data}" filterBy="#{vacinacao.data}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="#{labels.carcaca_data}" />
+								</f:facet>
+								<h:outputText value="#{vacinacao.data}" />
+							</p:column>
+
+
+							<p:column sortBy="#{vacinacao.medicamento.nome}"
+								filterBy="#{vacinacao.medicamento.nome}"
+								style="text-align: center" width="150">
+								<f:facet name="header">
+									<h:outputText value="Medicamento" />
+								</f:facet>
+								<h:outputText value="#{vacinacao.medicamento.nome}" />
+							</p:column>
+
+							<p:column sortBy="#{vacinacao.observacao}"
+								filterBy="#{vacinacao.observacao}" style="text-align: center"
+								width="150">
+								<f:facet name="header">
+									<h:outputText value="Observação" />
+								</f:facet>
+								<h:outputText value="#{vacinacao.observacao}" escape="false" />
+							</p:column>
+						</p:dataTable>
+
+						<div align="right">
+							<b>Opções de exportação: </b>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="vacinacaoDataTable"
+									fileName="Todas as Vacinações" pageOnly="false" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{systemSessionMB.fazenda.pecuarista != null}">
+								<p:graphicImage name="/images/csv.png" width="24" />
+								<p:dataExporter type="csv" target="vacinacaoDataTable"
+									fileName="Todas as Vacinações" pageOnly="false" />
+							</h:commandLink>
+						</div>
+					</div>
+					<div class="panel-footer" align="left">Vacinações</div>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

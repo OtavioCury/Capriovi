@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/bootstrap/css/bootstrap.css" />
+	<link href="resources/site/css/site.min.css" rel="stylesheet"
+		type="text/css" />
+
+	<link href="resources/site/css/font-awesome.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		rel="stylesheet" type="text/css" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		rel="stylesheet" type="text/css" />
+	<title>Cadastro - Capriovi</title>
+</h:head>
+<body id="page-top" class="index">
+	<f:view>
+		<f:event listener="#{pecuaristaAddEditMB.add()}" type="preRenderView"></f:event>
+	</f:view>
+	<nav id="mainNav"
+		class="navbar navbar-default navbar-fixed-top navbar-custom">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="inicial.xhtml">Capriovi</a>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<h:form>
+						<div class="login-panel panel panel-default">
+							<div class="panel-heading"
+								style="background: #f2f2f2; color: #000000; border-color: #f2f2f2"
+								align="center">
+								<h3 class="panel-title">Cadastro</h3>
+							</div>
+							<div class="panel-body">
+
+								<p:messages id="msgs" />
+
+								<p:wizard nextLabel="Próximo" backLabel="Anterior">
+
+									<p:tab title="Info. Pessoal">
+										<br />
+										<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+
+											<p:outputLabel value="Nome: " for="nome" />
+											<p:inputText id="nome"
+												value="#{pecuaristaAddEditMB.pecuarista.nome}"
+												required="true">
+												<f:validateLength minimum="3" maximum="30" />
+											</p:inputText>
+											<p:message for="nome" />
+
+											<p:outputLabel value="Cpf: " for="cpf" />
+											<p:inputMask id="cpf"
+												value="#{pecuaristaAddEditMB.pecuarista.cpf}"
+												mask="999.999.999-99" required="true" />
+											<p:message for="cpf" />
+
+											<p:outputLabel value="Endereço: " for="endereco" />
+											<p:inputText id="endereco"
+												value="#{pecuaristaAddEditMB.pecuarista.endereco}"
+												required="true">
+												<f:validateLength minimum="5" maximum="40" />
+											</p:inputText>
+											<p:message for="endereco" />
+
+											<p:outputLabel value="Estado: " for="estado" />
+											<p:selectOneMenu id="estado" filter="true"
+												value="#{pecuaristaAddEditMB.pecuarista.estado}"
+												style="width:200px" required="true">
+												<f:selectItem itemLabel="Selecionar Estado" itemValue=""
+													noSelectionOption="true" />
+												<f:selectItems value="#{pecuaristaAddEditMB.estados}" />
+											</p:selectOneMenu>
+											<p:message for="estado" />
+
+											<p:outputLabel value="Municipio: " for="municipio" />
+											<p:inputText id="municipio" label="Municipio" required="true"
+												value="#{pecuaristaAddEditMB.pecuarista.municipio}">
+												<f:validateLength minimum="3" maximum="15" />
+											</p:inputText>
+											<p:message for="municipio" />
+										</p:panelGrid>
+									</p:tab>
+
+									<p:tab title="Contato">
+										<br />
+										<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+
+											<p:outputLabel value="Telefone (Fixo): " for="telefone" />
+											<p:inputMask id="telefone"
+												value="#{pecuaristaAddEditMB.pecuarista.telefone}"
+												mask="(99) 9999-9999" />
+											<p:message for="telefone" />
+
+											<p:outputLabel value="Celular: " for="celular" />
+											<p:inputMask id="celular"
+												value="#{pecuaristaAddEditMB.pecuarista.celular}"
+												mask="(99) 9 9999-9999" required="true" />
+											<p:message for="celular" />
+
+											<p:outputLabel value="Email: " for="email" />
+											<p:inputText id="email" label="Email"
+												validatorMessage="Este E-mail não é válido" required="true"
+												value="#{pecuaristaAddEditMB.pecuarista.email}">
+												<f:validateRegex
+													pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+											</p:inputText>
+											<p:message for="email" />
+										</p:panelGrid>
+										<br />
+									</p:tab>
+
+									<p:tab title="Conta">
+										<p:panelGrid columns="3" styleClass="ui-panelgrid-blank">
+											<p:outputLabel value="Login: " for="username" />
+											<p:inputText id="username"
+												value="#{pecuaristaAddEditMB.pecuarista.username}"
+												required="true">
+												<f:validateLength minimum="3" maximum="25" />
+											</p:inputText>
+											<p:message for="username" />
+
+											<p:outputLabel value="Senha: " for="password" />
+											<p:password id="password" match="confirmPassword"
+												label="Password 1" required="true" feedback="true"
+												value="#{pecuaristaAddEditMB.pecuarista.password}"
+												promptLabel="Digite sua senha" weakLabel="Fraca"
+												strongLabel="Forte" goodLabel="Média">
+												<f:validateLength minimum="6" />
+											</p:password>
+											<p:message for="password" />
+
+
+											<p:outputLabel value="Corfirmar senha: "
+												for="confirmPassword" />
+											<p:password id="confirmPassword" label="Password 2"
+												required="true"
+												value="#{pecuaristaAddEditMB.pecuarista.password}">
+												<f:validateLength minimum="6" />
+											</p:password>
+											<p:message for="confirmPassword" />
+										</p:panelGrid>
+									</p:tab>
+									<p:tab title="Confirmação">
+										<p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+
+											<p:outputLabel value="Nome: " styleClass="DescricaoOutPut" />
+											<h:outputText value="#{pecuaristaAddEditMB.pecuarista.nome}" />
+
+											<p:outputLabel value="CPF: " />
+											<h:outputText value="#{pecuaristaAddEditMB.pecuarista.cpf}" />
+
+											<p:outputLabel value="Endereço: " />
+											<h:outputText
+												value="#{pecuaristaAddEditMB.pecuarista.endereco}" />
+
+											<p:outputLabel value="Estado: " />
+											<h:outputText
+												value="#{pecuaristaAddEditMB.pecuarista.estado}" />
+
+											<p:outputLabel value="Município: " />
+											<h:outputText
+												value="#{pecuaristaAddEditMB.pecuarista.municipio}" />
+
+											<p:outputLabel value="Telefone: " />
+											<h:outputText
+												value="#{pecuaristaAddEditMB.pecuarista.telefone}" />
+
+											<p:outputLabel value="Email: " />
+											<h:outputText value="#{pecuaristaAddEditMB.pecuarista.email}" />
+
+											<p:outputLabel value="Login: " />
+											<h:outputText
+												value="#{pecuaristaAddEditMB.pecuarista.username}" />
+
+										</p:panelGrid>
+
+										<p:captcha label="Captcha" language="pt" />
+
+										<br />
+										<div align="center">
+											<p:commandButton value="Cadastrar" ajax="false"
+												validateClient="true" style="text-align:center"
+												icon="fa fa-check" action="#{pecuaristaAddEditMB.save}" />
+										</div>
+									</p:tab>
+								</p:wizard>
+
+							</div>
+						</div>
+						<div align="center">
+							<p:commandButton value="Voltar à página de login"
+								action="login.xhtml?faces-redirect=true" icon="fa fa-mail-reply"
+								actionListener="#{pecuaristaAddEditMB.cancel}" ajax="false"
+								immediate="true"
+								style="background: #ff3333; border-color: #ff3333" />
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

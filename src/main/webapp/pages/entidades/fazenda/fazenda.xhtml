@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Detalhamento fazenda"
+				url="/pages/entidades/fazenda/fazenda.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+			<p:growl id="growl" life="2000" />
+		</h:form>
+
+		<br></br>
+		<br></br>
+
+		<h:form>
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+					<h3 class="panel-title">Informações sobre a fazenda</h3>
+				</div>
+				<div class="panel-body">
+
+					<p:accordionPanel multiple="true">
+
+						<p:tab title="#{labels.detalhe_fazenda}">
+							<p:panelGrid columns="2" cellpadding="10" class="ui-noborder">
+
+								<h:outputText value="#{labels.fazenda_name}: "
+									styleClass="DescricaoOutPut" />
+								<h:outputText value=" #{fazendaAddEditMB.fazenda.nome}" />
+
+								<h:outputText value="#{labels.fazenda_estado}: "
+									styleClass="DescricaoOutPut" />
+								<h:outputText value="#{fazendaAddEditMB.fazenda.estado}" />
+
+								<h:outputText value="#{labels.fazenda_municipio}: "
+									styleClass="DescricaoOutPut" />
+								<h:outputText value="#{fazendaAddEditMB.fazenda.municipio}" />
+
+								<c:if test="#{fazendaAddEditMB.fazenda.cnpj != null}">
+									<h:outputText value="CNPJ: " styleClass="DescricaoOutPut" />
+									<h:outputText value="#{fazendaAddEditMB.fazenda.cnpj}" />
+								</c:if>
+
+								<c:if test="#{fazendaAddEditMB.fazenda.dimensao != null}">
+									<h:outputText value="#{labels.fazenda_dimensao}: "
+										styleClass="DescricaoOutPut" />
+									<h:outputText value="#{fazendaAddEditMB.fazenda.dimensao}" />
+								</c:if>
+
+								<h:outputText value="#{labels.fazenda_telefone}: "
+									styleClass="DescricaoOutPut" />
+								<h:outputText value="#{fazendaAddEditMB.fazenda.telefone}" />
+
+								<h:outputText value="#{labels.fazenda_pecuarista}: "
+									styleClass="DescricaoOutPut" />
+								<h:outputText
+									value="#{fazendaAddEditMB.fazenda.pecuarista.nome}" />
+
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="#{labels.rebanhos}">
+
+							<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+								var="rebanho"
+								value="#{rebanhoMB.rebanhosFazenda(fazendaAddEditMB.fazenda)}"
+								paginator="true" rows="10" sortMode="multiple"
+								paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20"
+								loadingMessage="#{labels.rebanho_load}" resizableColumns="true"
+								rowKey="#{rebanho.id}" reflow="true"
+								emptyMessage="Nenhum registro foi encontrado">
+								<f:facet name="header">
+									<h6>
+										#{labels.rebanhos_cadastrados}
+										${fazendaAddEditMB.fazenda.nome}
+										<p:commandButton id="toggler" type="button"
+											value="#{labels.coluna}" icon="ui-icon-calculator"
+											style="float:right" />
+										<p:columnToggler datasource="rebanhoDataTable"
+											trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}"
+									style="text-align: center">
+									<f:facet name="header">
+										<h:outputText value="#{labels.rebanho_name}" />
+									</f:facet>
+									<h:outputText value="#{rebanho.nome}" />
+								</p:column>
+
+								<p:column sortBy="#{rebanho.fazenda.nome}"
+									filterBy="#{rebanho.fazenda.nome}" style="text-align: center">
+									<f:facet name="header">
+										<h:outputText value="#{labels.rebanho_fazenda}" />
+									</f:facet>
+									<h:outputText value="#{rebanho.fazenda.nome}" />
+								</p:column>
+							</p:dataTable>
+							<div align="right">
+								<b>#{labels.button_export}</b>
+								<h:commandLink>
+									<p:graphicImage name="/images/pdf.jpg" width="24" />
+									<p:dataExporter type="pdf" target="rebanhoDataTable"
+										fileName="Rebanhos da fazenda #{fazendaAddEditMB.fazenda.nome}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="rebanhoDataTable"
+										fileName="Rebanhos da fazenda #{fazendaAddEditMB.fazenda.nome}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink>
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv" target="rebanhoDataTable"
+										fileName="Rebanhos da fazenda #{fazendaAddEditMB.fazenda.nome}"
+										pageOnly="false" />
+								</h:commandLink>
+							</div>
+
+						</p:tab>
+
+						<p:tab title="Funcionários">
+							<p:dataTable id="funcionarioDataTable" widgetVar="dataTable"
+								var="funcionario" value="#{funcionarioMB.funcionarios}"
+								paginator="true" rows="10" sortMode="multiple"
+								paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,20"
+								loadingMessage="#{labels.funcionario_load}"
+								resizableColumns="true" selectionMode="single"
+								rowKey="#{funcionario.id}" reflow="true"
+								emptyMessage="Nenhum registro foi encontrado"
+								draggableColumns="true">
+								<f:facet name="header">
+									<h6>
+										#{labels.funcionario_cadastrada}
+										<p:commandButton id="toggler" type="button"
+											value="#{labels.coluna}" icon="ui-icon-calculator"
+											style="float:right" />
+										<p:columnToggler datasource="funcionarioDataTable"
+											trigger="toggler" />
+									</h6>
+								</f:facet>
+
+								<p:column sortBy="#{funcionario.nome}"
+									filterBy="#{funcionario.nome}" style="text-align: center">
+									<f:facet name="header">
+										<h:outputText value="#{labels.funcionario_name}" />
+									</f:facet>
+									<h:outputText value="#{funcionario.nome}" />
+								</p:column>
+
+								<p:column sortBy="#{funcionario.email}"
+									filterBy="#{funcionario.email}" style="text-align: center">
+									<f:facet name="header">
+										<h:outputText value="E-Mail" />
+									</f:facet>
+									<h:outputText value="#{funcionario.email}" />
+								</p:column>
+
+								<p:column sortBy="#{funcionario.cpf}"
+									filterBy="#{funcionario.cpf}" style="text-align: center">
+									<f:facet name="header">
+										<h:outputText value="CPF:" />
+									</f:facet>
+									<h:outputText value="#{funcionario.cpf}" />
+								</p:column>
+
+								<p:column sortBy="#{funcionario.estado}"
+									filterBy="#{funcionario.estado}" style="text-align: center">
+									<f:facet name="header">
+										<h:outputText value="Estado" />
+									</f:facet>
+									<h:outputText value="#{funcionario.estado}" />
+								</p:column>
+							</p:dataTable>
+
+							<div align="right">
+								<b>#{labels.button_export}</b>
+								<h:commandLink>
+									<p:graphicImage name="/images/pdf.jpg" width="24" />
+									<p:dataExporter type="pdf" target="funcionarioDataTable"
+										fileName="Funcionários da fazenda #{fazendaAddEditMB.fazenda.nome}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="funcionarioDataTable"
+										fileName="Funcionários da fazenda #{fazendaAddEditMB.fazenda.nome}"
+										pageOnly="false" />
+								</h:commandLink>
+								<h:commandLink>
+									<p:graphicImage name="/images/csv.png" width="24" />
+									<p:dataExporter type="csv" target="funcionarioDataTable"
+										fileName="Funcionários da fazenda #{fazendaAddEditMB.fazenda.nome}"
+										pageOnly="false" />
+								</h:commandLink>
+							</div>
+						</p:tab>
+
+					</p:accordionPanel>
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+					<p:commandButton value="#{labels.button_back}"
+						action="/pages/home.xhtml"
+						actionListener="#{fazendaAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-mail-reply" />
+				</p:outputPanel>
+			</p:row>
+			<br />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

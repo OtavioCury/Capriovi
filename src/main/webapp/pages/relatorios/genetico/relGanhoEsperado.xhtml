@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Ganho genético esperado"
+				url="/pages/relatorios/genetico/relGanhoEsperado.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="rebanhoForm">
+			<p:growl id="msg" showDetail="true" />
+			<p:panel id="custom" header="Ganho genético esperado"
+				style="margin-bottom:20px; text-align:center; ">
+				<f:facet name="actions">
+					<p:commandLink
+						styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						oncomplete="PF('descRel').show()">
+						<h:outputText styleClass="ui-icon ui-icon-help" />
+					</p:commandLink>
+				</f:facet>
+				<div class="panel-body">
+
+					<p:wizard
+						flowListener="#{relGanhoGeneticoEsperadoMB.onFlowProcess}"
+						backLabel="Voltar" nextLabel="Gerar Relatório"
+						widgetVar="myWizard">
+
+						<p:tab id="selection" title="Rebanho">
+							<p:messages id="msgs" showDetail="false" life="2000" />
+							<div class="panel-body">
+								<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+									var="rebanho" value="#{relGanhoGeneticoEsperadoMB.rebanhos}"
+									paginator="true" rows="10" sortMode="multiple"
+									paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{relGanhoGeneticoEsperadoMB.rebanhosMarcados}"
+									rowKey="#{rebanho.id}" reflow="true"
+									emptyMessage="Nenhum registro encontrada">
+									<f:facet name="header">
+										<h5>Selecione os rebanhos a serem analisados</h5>
+									</f:facet>
+									<p:column selectionMode="single"
+										style="width:45px;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.nome}" />
+									</p:column>
+
+									<p:column sortBy="#{rebanho.fazenda.nome}"
+										filterBy="#{rebanho.fazenda.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.fazenda}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.fazenda.nome}" />
+									</p:column>
+
+								</p:dataTable>
+								<br />
+								<div class="ui-fluid">
+									<p:panelGrid columns="6" styleClass="ui-panelgrid-blank"
+										layout="grid"
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+										<p:outputLabel for="propMachos"
+											value="Proporção de machos Selecionados: " />
+										<p:selectOneMenu id="propMachos" required="true"
+											value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.propMachos}">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{relGanhoGeneticoEsperadoMB.propMachos}" />
+										</p:selectOneMenu>
+										<p:message for="propMachos" />
+
+										<p:outputLabel for="propFemeas"
+											value="Proporção de fêmeas selecionadas: " />
+										<p:selectOneMenu id="propFemeas" required="true"
+											value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.propFemeas}">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{relGanhoGeneticoEsperadoMB.propFemeas}" />
+										</p:selectOneMenu>
+										<p:message for="propMachos" />
+
+										<p:outputLabel for="carac"
+											value="Herdabilidade da Característica:  " />
+										<p:inputMask id="carac" required="true"
+											value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.herdabilidade}"
+											mask="9.9" />
+										<p:message for="carac" />
+
+										<p:outputLabel for="diasPesagem" value="Ajuste do Peso: " />
+										<p:selectOneMenu id="diasPesagem" required="true"
+											value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.pesoEscolhido}">
+											<f:selectItem itemLabel="Selecione um ajuste" itemValue="" />
+											<f:selectItems value="#{relGanhoGeneticoEsperadoMB.pesos}" />
+										</p:selectOneMenu>
+										<p:message for="propMachos" />
+
+									</p:panelGrid>
+								</div>
+							</div>
+
+						</p:tab>
+
+						<p:tab id="relatorio" title="Relatório">
+
+							<div align="center" class="panel-body">
+								<p:panelGrid style="margin-top:20px; width: 100%;"
+									columnClasses="">
+									<f:facet name="header">
+										<p:row>
+											<p:column colspan="4">Ganho genético esperado e diferencial de seleção para pesos ajustados (60, 120 e 180 dias) do Rebanho: #{relGanhoGeneticoEsperadoMB.rebanhosMarcados.nome}</p:column>
+										</p:row>
+										<p:row>
+											<p:column colspan="4">Detalhes</p:column>
+										</p:row>
+
+									</f:facet>
+
+									<p:row>
+										<p:column style="font-weight: bold;">
+											<h:outputText value="#{labels.rebanho_name}: "
+												styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value=" #{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.rebanho}" />
+										</p:column>
+										<p:column style="font-weight: bold; ">
+											<h:outputText value="Total animais vivos: "
+												styleClass="DescricaoOutPut" />
+
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.totalAniVivosReb}" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column style="font-weight: bold;">
+											<h:outputText value="Total animais aptos: "
+												styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.totalAnimaisAptos}" />
+										</p:column>
+										<p:column style="font-weight: bold;">
+											<h:outputText value="Total de machos selecionados: "
+												styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.machosSel}" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column style="font-weight: bold;">
+											<h:outputText value="Total de fêmeas selecionadas: "
+												styleClass="DescricaoOutPut" />
+										</p:column>
+										<p:column>
+											<h:outputText
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.femeasSel}" />
+										</p:column>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Intensidade seleção média:" />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.intensidadeMedia()}">
+												<f:convertNumber minFractionDigits="3" />
+											</h:outputText>
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText
+												value="Desvio padrão fenotípico da característica:" />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.desvioPadraoCarac}">
+												<f:convertNumber minFractionDigits="3" />
+											</h:outputText>
+										</p:column>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Diferencial de Seleção (ΔS):" />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText style="font-weight: bold;"
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.diferencialSel}">
+												<f:convertNumber minFractionDigits="3" />
+											</h:outputText>
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1" style="font-weight: bold;">
+											<h:outputText value="Ganho Genético Esperado (ΔG):" />
+										</p:column>
+										<p:column colspan="1" align="center">
+											<h:outputText style="font-weight: bold;"
+												value="#{relGanhoGeneticoEsperadoMB.resumoGanhoGeneticoEsp.ganhoGenEsp}">
+												<f:convertNumber minFractionDigits="3" />
+											</h:outputText>
+										</p:column>
+									</p:row>
+
+
+								</p:panelGrid>
+							</div>
+						</p:tab>
+					</p:wizard>
+					<p:dialog header="#{labels.relatorio_descricao}"
+						widgetVar="descRel" modal="true" showEffect="fade"
+						resizable="true" width="800" closeOnEscape="true"
+						appendTo="@(body)" footer="Ganho esperado" responsive="true"
+						maximizable="true">
+						<p:outputPanel id="multiCarDetail" style="text-align:justify;">
+							<h5>O usuário terá que escolher na entrada do relatório o
+								rebanho o qual deseja obter o relatório. Além disso, ele terá
+								que informar a porcentagem de machos e fêmeas selecionadas,
+								herdabilidade da característica e o ajuste de peso (60, 120 e
+								180 dias) que deseja obter no relatório. A saída desse relatório
+								será em formato de listagem, contendo o nome do rebanho, total
+								de animais vivos e mortos do rebanho, total de machos e fêmeas
+								selecionadas, intensidade de seleção média, desvio padrão
+								fenotípico da características, o diferencial de seleção e o
+								ganho genético esperado para o rebanho. Deve ser selecionado
+								pelo menos um rebanho para execução.</h5>
+						</p:outputPanel>
+					</p:dialog>
+				</div>
+			</p:panel>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

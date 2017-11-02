@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Seleção Individual ou Massal"
+				url="/pages/relatorios/acasalamento/relNsgaII.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="rebanhoForm">
+			<p:growl id="msg" showDetail="true" />
+			<p:panel id="custom" header="Seleção Individual ou Massal"
+				style="margin-bottom:20px; text-align:center; ">
+				<f:facet name="actions">
+					<p:commandLink
+						styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						oncomplete="PF('descRel').show()">
+						<h:outputText styleClass="ui-icon ui-icon-help" />
+					</p:commandLink>
+				</f:facet>
+
+				<div class="panel-body">
+
+					<p:wizard flowListener="#{nsgaIIMB.onFlowProcess}"
+						backLabel="Voltar" nextLabel="Gerar Relatório"
+						widgetVar="myWizard">
+						<p:tab id="escolheRebanho" title="Rebanho">
+							<p:messages id="msgs" showDetail="false" life="2000"
+								closable="true" />
+							<div class="panel-body">
+
+								<p:dataTable id="rebanhoDataTable" widgetVar="dataTable"
+									var="rebanho" value="#{nsgaIIMB.rebanhos}" paginator="true"
+									rows="10" sortMode="multiple" paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,20"
+									loadingMessage="#{labels.rebanho_load}"
+									selection="#{nsgaIIMB.rebanhoDT}" rowKey="#{rebanho.id}"
+									reflow="true" emptyMessage="Nenhum registro encontrado">
+									<f:facet name="header">
+									#{labels.rebanhos_cadastrados} ${fazendaAddEditMB.fazenda.nome}
+								</f:facet>
+									<p:column selectionMode="multiple"
+										style="width:45px;text-align:center" />
+
+									<p:column sortBy="#{rebanho.nome}" filterBy="#{rebanho.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.rebanho_name}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.nome}" />
+									</p:column>
+
+									<p:column sortBy="#{rebanho.fazenda.nome}"
+										filterBy="#{rebanho.fazenda.nome}">
+										<f:facet name="header">
+											<h:outputText value="#{labels.fazenda}" />
+										</f:facet>
+										<h:outputText value="#{rebanho.fazenda.nome}" />
+									</p:column>
+
+									<f:facet name="footer">
+							        #{relAnimaisPorEntradaMB.rebanhos.size()} #{labels.rebanho_retornado}.
+							    </f:facet>
+
+								</p:dataTable>
+								<br />
+
+								<div class="ui-fluid">
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										layout="grid"
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+										<p:outputLabel for="herd" value="Herdabilidade: " />
+										<p:inputMask id="herd"
+											value="#{nsgaIIMB.inputNsgaII.herdabilidade}" mask="9.9" />
+
+										<p:outputLabel for="idadeMacho" value="Idade Min. Macho: " />
+										<p:inputMask id="idadeMacho"
+											value="#{nsgaIIMB.inputNsgaII.idadeAcasalamentoMachos}"
+											mask="9" />
+
+										<p:outputLabel for="idadeFemea" value="Idade Min. Femea: " />
+										<p:inputMask id="idadeFemea"
+											value="#{nsgaIIMB.inputNsgaII.idadeAcasalamentoFemeas}"
+											mask="9" />
+
+										<p:outputLabel for="diasPesagem" value="Ajuste do Peso: " />
+										<p:selectOneMenu id="diasPesagem"
+											value="#{nsgaIIMB.inputNsgaII.diasPesagem}">
+											<f:selectItem itemLabel="Select One" itemValue="" />
+											<f:selectItems value="#{nsgaIIMB.pesos}" />
+										</p:selectOneMenu>
+
+									</p:panelGrid>
+								</div>
+							</div>
+						</p:tab>
+						<p:tab id="Casal" title="Prop. Casais">
+							<p:growl id="msgProp" showDetail="false" life="2000" />
+							<p:growl id="msgPropF" showDetail="false" life="2000" />
+							<div class="row">
+								<div class="col-xs-6" align="left">
+									<p:commandButton value="Voltar" icon="fa fa-arrow-left"
+										iconPos="left" onclick="PF('myWizard').back()" />
+								</div>
+								<div class="col-xs-6" align="right">
+									<p:commandButton value="Próximo" icon="fa fa-arrow-right"
+										iconPos="left" onclick="PF('myWizard').next()" />
+								</div>
+							</div>
+							<div class="panel-body">
+								<h2>Machos</h2>
+								<p:pickList id="PojoPickListMachos" value="#{nsgaIIMB.machos}"
+									var="macho" effect="bounce" itemValue="#{macho}"
+									itemLabel="#{macho.nomeNumero}" showSourceControls="true"
+									showTargetControls="true" showCheckbox="true" responsive="true"
+									showSourceFilter="true" showTargetFilter="true"
+									filterMatchMode="contains" converter="animalPickListConverter">
+
+									<f:facet name="sourceCaption">
+										<h:outputText value="Nome  |  DEP  |  Endogamia" />
+									</f:facet>
+
+									<f:facet name="targetCaption">
+										<h:outputText value="Nome  |  DEP  |  Endogamia" />
+									</f:facet>
+
+									<p:ajax event="transfer" listener="#{nsgaIIMB.onTransfer}"
+										update="msgProp" />
+									<p:ajax event="select" listener="#{nsgaIIMB.onSelect}"
+										update="msgProp" />
+									<p:ajax event="unselect" listener="#{nsgaIIMB.onUnselect}"
+										update="msgProp" />
+									<p:ajax event="reorder" listener="#{nsgaIIMB.onReorder}"
+										update="msgProp" />
+
+									<p:column style="width:50%">
+										<h:outputText value="#{macho.nomeNumero}" />
+									</p:column>
+
+									<p:column style="width:25%;">
+										<h:outputText value="#{macho.ganhoGenetico}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+									<p:column style="width:25%;">
+										<h:outputText value="#{macho.endogamia}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+								</p:pickList>
+								<h2>Fêmeas</h2>
+								<p:pickList id="PojoPickListFemeas" value="#{nsgaIIMB.femeas}"
+									var="femea" effect="bounce" itemValue="#{femea}"
+									itemLabel="#{femea.nomeNumero}" showSourceControls="true"
+									showTargetControls="true" showCheckbox="true" responsive="true"
+									showSourceFilter="true" showTargetFilter="true"
+									filterMatchMode="contains" converter="animalPickListConverter">
+
+									<f:facet name="sourceCaption">
+										<h:outputText value="Nome  |  DEP  |  Endogamia" />
+									</f:facet>
+
+									<f:facet name="targetCaption">
+										<h:outputText value="Nome  |  DEP  |  Endogamia" />
+									</f:facet>
+
+									<p:ajax event="transfer" listener="#{nsgaIIMB.onTransfer}"
+										update="msgPropF" />
+									<p:ajax event="select" listener="#{nsgaIIMB.onSelect}"
+										update="msgPropF" />
+									<p:ajax event="unselect" listener="#{nsgaIIMB.onUnselect}"
+										update="msgPropF" />
+									<p:ajax event="reorder" listener="#{nsgaIIMB.onReorder}"
+										update="msgPropF" />
+
+									<p:column style="width:50%">
+										<h:outputText value="#{femea.nomeNumero}" />
+									</p:column>
+
+									<p:column style="width:25%;">
+										<h:outputText value="#{femea.diferencialEsperado}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+
+									<p:column style="width:25%;">
+										<h:outputText value="#{femea.endogamia}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+								</p:pickList>
+
+
+							</div>
+						</p:tab>
+						<p:tab id="relatorio" title="Relatório">
+							<div align="left">
+								<p:commandButton value="Voltar" icon="fa fa-arrow-left"
+									iconPos="left" onclick="PF('myWizard').back()" />
+							</div>
+
+							<div align="center" class="panel-body">
+								<p:dataTable id="nsgaIIDT" widgetVar="dataTable2"
+									value="#{nsgaIIMB.resumoNsgaII.animais2}" var="animal"
+									paginator="true" rows="10" lazy="true" sortMode="multiple"
+									paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15"
+									loadingMessage="#{labels.animais_load}" rowKey="#{animal.id}"
+									reflow="true" emptyMessage="Nenhuma informação encontrada">
+
+									<f:facet name="header">
+						Relatório Acasalamento NSGA II
+					</f:facet>
+
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="DEP Esperada" />
+										</f:facet>
+										<h:outputText value="#{animal.diferencialEsperado}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Ganho Genetico" />
+										</f:facet>
+										<h:outputText value="#{animal.ganhoGenetico}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Endogamia" />
+										</f:facet>
+										<h:outputText value="#{animal.endogamia}">
+											<f:convertNumber minFractionDigits="3" />
+										</h:outputText>
+									</p:column>
+
+
+								</p:dataTable>
+
+								<div align="right">
+									<b>Opções de exportação: </b>
+									<h:commandLink>
+										<p:graphicImage name="/images/pdf.jpg" width="24" />
+										<p:dataExporter type="pdf" target="AnimaisPorEntradaDT"
+											fileName="Relatório melhoramento genético" pageOnly="false" />
+									</h:commandLink>
+									<h:commandLink>
+										<p:graphicImage name="/images/excel.png" width="24" />
+										<p:dataExporter type="xls" target="AnimaisPorEntradaDT"
+											fileName="Relatório melhoramento genético" pageOnly="false" />
+									</h:commandLink>
+									<h:commandLink>
+										<p:graphicImage name="/images/csv.png" width="24" />
+										<p:dataExporter type="csv" target="AnimaisPorEntradaDT"
+											fileName="Relatório melhoramento genético" pageOnly="false" />
+									</h:commandLink>
+								</div>
+
+							</div>
+						</p:tab>
+					</p:wizard>
+					<p:dialog header="Descrição do Relatório" widgetVar="descRel"
+						modal="true" showEffect="fade" resizable="true" width="700"
+						closeOnEscape="true" appendTo="@(body)">
+						<p:outputPanel id="multiCarDetail" style="text-align:justify;">
+							<p:outputLabel>
+					            O usuário terá que escolher na entrada do relatório o rebanho o 
+					            qual deseja obter o relatório. Além disso, ele terá que informar a 
+					            herdabilidade da característica, idade mínima para acasalamento dos machos e 
+					            fêmeas (meses), quantidade de dias para ajuste do peso (60, 120 e 180 dias) e a 
+					            data da avaliação. A saída desse relatório será em formato de listagem, contendo o 
+					            nome do pai e da mãe (indicação de acasalamentos), o valor de Diferença Esperada na 
+					            Progênie (DEP), Ganho Genético e a Endogamia do filho a ser gerado.  Deve ser selecionado 
+					            pelo menos um rebanho para execução.					            
+					        </p:outputLabel>
+						</p:outputPanel>
+					</p:dialog>
+				</div>
+			</p:panel>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				oncomplete="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" showEffect="fade"
+				appendTo="@(body)" style="align:center; text-align:center"
+				closable="false" position="center" minimizable="false"
+				maximizable="false" resizable="false" showHeader="true"
+				header="Processando">
+				<p:graphicImage name="carregand.gif" library="gifs" />
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

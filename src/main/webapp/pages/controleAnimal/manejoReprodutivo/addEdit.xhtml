@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../../main.xhtml">
+
+	<ui:define name="bread">
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="/pages/home.xhtml" />
+			<p:menuitem value="Listagem de Manejos"
+				url="/pages/controleAnimal/manejoReprodutivo/list.xhtml" />
+			<p:menuitem value="#{labels.cadastro_manejo}"
+				url="/pages/controleAnimal/manejoReprodutivo/addEdit.xhtml" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<br></br>
+		<br></br>
+
+		<h:form>
+
+			<p:growl life="3000" id="msgs" showDetail="true" />
+
+			<div class="panel panel-default" style="width: 95%; margin-left: 2%">
+				<div class="panel-heading"
+					style="background: #f2f2f2; color: #000000; border-color: #f2f2f2"
+					align="center">
+					<h3 class="panel-title" style="font-weight: bold;">#{manejoReprodutivoAddEditMB.title}</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="ui-fluid">
+						<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+							layout="grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+							<p:outputLabel value="#{labels.rebanho}:" for="rebanhoPojo" />
+							<p:autoComplete id="rebanhoPojo"
+								completeMethod="#{manejoReprodutivoAddEditMB.completeRebanho}"
+								var="rebanho" itemLabel="#{rebanho}" itemValue="#{rebanho}"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.rebanho.nome}"
+								forceSelection="true" required="true" dropdown="true"
+								placeholder="Nome do Rebanho">
+								<p:ajax listener="#{manejoReprodutivoAddEditMB.onChangeRabanho}"
+									update="msgs" event="itemSelect" />
+							</p:autoComplete>
+
+							<p:outputLabel value="#{labels.manejoReprodutivo_matriz}:"
+								for="matrizPojo" />
+							<p:autoComplete id="matrizPojo"
+								completeMethod="#{manejoReprodutivoAddEditMB.completeAnimalMae}"
+								var="matriz" itemLabel="#{matriz}" itemValue="#{matriz}"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.matriz.nomeNumero}"
+								forceSelection="true" required="true"
+								placeholder="Nome/Número da Matriz" dropdown="true">
+								<p:ajax listener="#{manejoReprodutivoAddEditMB.onChangeMatriz}"
+									update="msgs" event="itemSelect" />
+							</p:autoComplete>
+
+							<p:outputLabel
+								value="#{labels.manejoReprodutivo_dataCobertura}: "
+								for="dataCobertura" />
+							<p:calendar id="dataCobertura"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.dataDaCobertura}"
+								effect="fold" validatorMessage="A data deve ser passado"
+								maxdate="#{manejoReprodutivoAddEditMB.todayDate}"
+								locale="#{labels.calendario}" required="true"
+								pattern="dd-MM-yyyy" navigator="true">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+
+							<p:outputLabel value="Peso da Matriz: " for="pesoMatriz" />
+							<p:inputText id="pesoMatriz"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.pesoMatriz}"
+								required="true">
+								<f:validateDoubleRange minimum="0" />
+							</p:inputText>
+
+							<p:outputLabel value="Escore corporal da matriz: "
+								for="scoreCorporalmatriz" />
+							<p:spinner id="scoreCorporalmatriz"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.scoreCorporalmatriz}"
+								required="true" min="1" max="5" stepFactor="0.25" />
+
+							<p:outputLabel value="Reprodutor utilizado:" for="reprodutorPojo" />
+							<p:autoComplete id="reprodutorPojo"
+								completeMethod="#{manejoReprodutivoAddEditMB.completeAnimalPai}"
+								var="reprodutor" itemLabel="#{reprodutor}"
+								itemValue="#{reprodutor}"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.reprodutor.nomeNumero}"
+								forceSelection="true" required="true"
+								placeholder="Nome/Número da Reprodutor" dropdown="true">
+								<p:ajax
+									listener="#{manejoReprodutivoAddEditMB.onChangeReprodutor}"
+									update="msgs" event="itemSelect" />
+							</p:autoComplete>
+
+							<p:outputLabel for="paricao" value="Parição: " />
+							<p:selectOneMenu id="paricao"
+								value="#{manejoReprodutivoAddEditMB.paricao}" effect="fold"
+								required="true">
+								<p:ajax update="dataParto parto desmame dataCioPosParto" />
+								<f:selectItem itemLabel="Tipo Parição" itemValue="-"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Sim" itemValue="Sim" />
+								<f:selectItem itemLabel="Não" itemValue="Não" />
+								<f:selectItem itemLabel="Em andamento" itemValue="Em andamento" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Perímetro escrotal do reprodutor: "
+								for="perimetro" />
+							<p:inputText id="perimetro"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.perimetroEscrotalReprodutor}" />
+
+
+							<p:outputLabel value="#{labels.manejoReprodutivo_dataParto}: "
+								for="dataParto" />
+							<p:calendar id="dataParto"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.dataParto}"
+								effect="fold" validatorMessage="A data deve ser passado"
+								maxdate="#{manejoReprodutivoAddEditMB.todayDate}"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy"
+								disabled="#{manejoReprodutivoAddEditMB.paricao != 'Sim'}">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+
+							<p:outputLabel for="parto" value="#{labels.animal_tipoParto}: " />
+							<p:selectOneMenu id="parto"
+								value="#{manejoReprodutivoAddEditMB.parto}" effect="fold"
+								disabled="#{manejoReprodutivoAddEditMB.paricao != 'Sim'}">
+								<f:selectItem itemLabel="#{labels.selecione_parto}"
+									itemValue="-" noSelectionOption="true" />
+								<f:selectItem itemLabel="Simples" itemValue="Simples" />
+								<f:selectItem itemLabel="#{labels.selecione_duplo}"
+									itemValue="Duplo" />
+								<f:selectItem itemLabel="#{labels.selecione_triplo}"
+									itemValue="Triplo" />
+								<f:selectItem itemLabel="#{labels.selecione_quadruplo}"
+									itemValue="Quádruplo" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="#{labels.manejoReprodutivo_desmame}: "
+								for="desmame" />
+							<p:calendar id="desmame"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.desmame}"
+								effect="fold" validatorMessage="A data deve ser passado"
+								maxdate="#{manejoReprodutivoAddEditMB.todayDate}"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy"
+								disabled="#{manejoReprodutivoAddEditMB.paricao != 'Sim'}">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+
+							<p:outputLabel
+								value="#{labels.manejoReprodutivo_dataCioPosParto}: "
+								for="dataCioPosParto" />
+							<p:calendar id="dataCioPosParto"
+								value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.dataCioPosParto}"
+								effect="fold" validatorMessage="A data deve ser passado"
+								maxdate="#{manejoReprodutivoAddEditMB.todayDate}"
+								locale="#{labels.calendario}" pattern="dd-MM-yyyy"
+								disabled="#{manejoReprodutivoAddEditMB.paricao != 'Sim'}">
+								<p:ajax event="dateSelect"
+									listener="#{calendarView.onDateSelect}" update="msgs" />
+							</p:calendar>
+
+						</p:panelGrid>
+					</div>
+
+					<br /> <br />
+
+
+					<p:outputLabel value="#{labels.button_cadastrarFilhos} "
+						for="crias" />
+					<p:commandButton id="crias" value="#{labels.button_cadastrar}"
+						type="button" onclick="PF('dlg2').show();"
+						style="margin-left:20px" />
+					<p:message for="crias" />
+
+					<br />
+
+					<div align="center">
+						<p:outputLabel value="#{labels.manejoReprodutivo_observacao}: "
+							for="observacao" style="margin-top:20px" />
+						<p:editor id="observacao" widgetVar="editorWidget"
+							value="#{manejoReprodutivoAddEditMB.manejoReprodutivo.observacao}"
+							width="500" />
+					</div>
+				</div>
+			</div>
+
+			<p:row>
+				<p:outputPanel style="width: 100%; text-align:center" layout="block">
+
+					<p:commandButton value="#{labels.button_cancel}"
+						action="/pages/controleAnimal/manejoReprodutivo/list.xhtml?faces-redirect=true"
+						actionListener="#{manejoReprodutivoAddEditMB.cancel}"
+						style="margin: 130 auto;background: #ff3333; border-color: #ff3333"
+						ajax="false" immediate="true" icon="fa fa-fw fa-remove" />
+
+					<p:commandButton value="#{labels.button_save}"
+						action="/pages/controleAnimal/manejoReprodutivo/list.xhtml?faces-redirect=true"
+						actionListener="#{manejoReprodutivoAddEditMB.save()}"
+						style="margin: 130 auto;margin-left:2%" ajax="false"
+						icon="ui-icon-disk" update="msg" />
+				</p:outputPanel>
+			</p:row>
+
+			<br />
+
+		</h:form>
+
+		<p:dialog header="#{labels.filhos_cadastrada}" widgetVar="dlg2"
+			modal="true" height="800" showEffect="fade" width="800"
+			closeOnEscape="true" appendTo="@(body)" draggable="false"
+			maximizable="true">
+			<h:form id="form">
+
+				<p:growl id="msgs" />
+
+				<div class="panel panel-default">
+					<div class="panel-heading"
+						style="background: #f2f2f2; color: #000000; border-color: #f2f2f2">
+						<h3 class="panel-title">#{labels.menu_informacoes}</h3>
+					</div>
+					<div class="panel-body">
+
+
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								layout="grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+								<h:outputLabel value="#{labels.animal_nomeNumero}: "
+									for="nomeNumero" />
+								<p:inputText id="nomeNumero"
+									value="#{manejoReprodutivoAddEditMB.animal.nomeNumero}"
+									required="true" />
+
+								<p:outputLabel value="#{labels.animal_nascimento}: "
+									for="nascimento" />
+								<p:calendar id="nascimento"
+									value="#{manejoReprodutivoAddEditMB.animal.nascimento}"
+									validatorMessage="A data deve ser passado" required="true"
+									maxdate="#{manejoReprodutivoAddEditMB.todayDate}"
+									locale="#{labels.calendario}" pattern="dd-MM-yyyy">
+								</p:calendar>
+
+								<h:outputLabel value="#{labels.peso}: " for="peso" />
+								<p:inputText id="peso"
+									value="#{manejoReprodutivoAddEditMB.desenvolvimentoPonderal.peso}"
+									required="true">
+									<f:validateDoubleRange minimum="0" />
+								</p:inputText>
+
+								<p:outputLabel for="parto" value="#{labels.animal_tipoParto}: " />
+								<p:selectOneMenu id="parto"
+									value="#{manejoReprodutivoAddEditMB.partoNome}" effect="fold"
+									required="true">
+									<f:selectItem itemLabel="Selecione o tipo" itemValue="-"
+										noSelectionOption="true" />
+									<f:selectItem itemLabel="Simples" itemValue="Simples" />
+									<f:selectItem itemLabel="Duplo" itemValue="Duplo" />
+									<f:selectItem itemLabel="Triplo" itemValue="Triplo" />
+									<f:selectItem itemLabel="Quádruplo" itemValue="Quádruplo" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="sexo" value="#{labels.animal_sexo}: " />
+								<p:selectOneMenu id="sexo"
+									value="#{manejoReprodutivoAddEditMB.sexoNome}" effect="fold"
+									immediate="true" required="true">
+									<f:selectItem itemLabel="Selecione o Sexo" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItem itemLabel="Macho" itemValue="Macho" />
+									<f:selectItem itemLabel="Fêmea" itemValue="Fêmea" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="motivoEntrada" value="Motivo de Entrada: " />
+								<p:selectOneMenu id="motivoEntrada"
+									value="#{manejoReprodutivoAddEditMB.motivoEntrada}"
+									effect="fold" required="true">
+									<f:selectItem itemLabel="Selecione o Motivo" itemValue="-"
+										noSelectionOption="true" />
+									<f:selectItem itemLabel="Compra" itemValue="Compra" />
+									<f:selectItem itemLabel="Nascimento" itemValue="Nascimento" />
+									<f:selectItem itemLabel="Emprestimo" itemValue="Emprestimo" />
+									<f:selectItem itemLabel="Outros" itemValue="Outros" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+						</div>
+					</div>
+
+					<p:commandButton id="btn_reset" value="#{labels.button_reset}"
+						icon="fa fa-remove" type="reset"
+						style="background: #ff3333; border-color: #ff3333;margin-left:3%" />
+					<p:commandButton value="#{labels.button_add}"
+						update="animais @parent" icon="fa fa-plus" style="margin-left:3%"
+						action="#{manejoReprodutivoAddEditMB.reinitAnimal()}">
+						<p:collector value="#{manejoReprodutivoAddEditMB.animal}"
+							addTo="#{manejoReprodutivoAddEditMB.animaisColector}"
+							unique="false" />
+					</p:commandButton>
+					<br /> <br />
+				</div>
+
+				<br />
+
+				<p:outputPanel id="animais">
+					<p:dataTable value="#{manejoReprodutivoAddEditMB.animaisColector}"
+						var="animal" id="animalDataTable" reflow="true">
+
+						<p:column headerText="#{labels.animal_nomeNumero}"
+							style="text-align:center">
+							<h:outputText value="#{animal.nomeNumero}" />
+						</p:column>
+
+						<p:column headerText="#{labels.animal_nascimento}"
+							style="text-align:center">
+							<f:facet name="header">
+								<h:outputText value="#{labels.animal_nascimento}" />
+							</f:facet>
+							<h:outputText value="#{animal.nascimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Peso" style="text-align:center">
+							<h:outputText
+								value="#{animal.desenvolvimentoPonderal.get(animal.desenvolvimentoPonderal.size() - 1).peso}" />
+						</p:column>
+
+						<p:column headerText="Sexo" style="text-align:center">
+							<h:outputText value="#{animal.sexo.descricao}" />
+						</p:column>
+
+						<p:column headerText="Sexo" style="text-align:center">
+							<h:outputText value="#{animal.motivoEntrada.descricao}" />
+						</p:column>
+
+						<p:column headerText="#{labels.coluna_acao}">
+							<div align="center">
+								<p:commandButton value="#{labels.button_remove}" update="@form"
+									process="@this" icon="fa fa-remove"
+									style="background: #ff3333; border-color: #ff3333">
+									<p:collector value="#{animal}"
+										removeFrom="#{manejoReprodutivoAddEditMB.animaisColector}"
+										unique="true" />
+								</p:commandButton>
+							</div>
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
